@@ -17,4 +17,11 @@ class ShowController extends Controller
     public function listAction(){
         return $this->render('show/list.html.twig');
     }
+
+    public function categoriesAction(){
+        return $this->render(
+            "_include/categories.html.twig",
+            ['categories' => ['Web Design', 'HTML', 'Freebies', 'Javascript', 'CSS', 'Tutorials']]
+        );
+    }
 }
