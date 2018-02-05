@@ -232,3 +232,6 @@
 [2018-02-05 14:35:21] request.INFO: Matched route "show_list". {"route":"show_list","route_parameters":{"_controller":"AppBundle\\Controller\\ShowController::listAction","_route":"show_list"},"request_uri":"http://localhost:8000/","method":"GET"} []
 [2018-02-05 14:35:21] security.INFO: Populated the TokenStorage with an anonymous Token. [] []
 [2018-02-05 14:35:21] request.INFO: Matched route "_wdt". {"route":"_wdt","route_parameters":{"_controller":"web_profiler.controller.profiler:toolbarAction","token":"3439ad","_route":"_wdt"},"request_uri":"http://localhost:8000/_wdt/3439ad","method":"GET"} []
+[2018-02-05 14:41:37] request.INFO: Matched route "show_list". {"route":"show_list","route_parameters":{"_controller":"AppBundle\\Controller\\ShowController::listAction","_route":"show_list"},"request_uri":"http://localhost:8000/","method":"GET"} []
+[2018-02-05 14:41:37] security.INFO: Populated the TokenStorage with an anonymous Token. [] []
+[2018-02-05 14:41:37] request.INFO: Matched route "_wdt". {"route":"_wdt","route_parameters":{"_controller":"web_profiler.controller.profiler:toolbarAction","token":"27561b","_route":"_wdt"},"request_uri":"http://localhost:8000/_wdt/27561b","method":"GET"} []
