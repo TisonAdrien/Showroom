@@ -15,7 +15,7 @@
 {#{% include "_include/menu.html.twig" %}#}
 {% embed "_include/menu.html.twig" %}
     {% block menu_title %}
-        {{ parent() }} by Dreamteam
+        {{ parent() }} by Dreamteam {% if app.environment != "prod" %} - Current env = {{ app.environment }}{% endif %}
     {% endblock menu_title %}
 {% endembed %}
 <!-- Page Content -->

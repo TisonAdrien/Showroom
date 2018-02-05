@@ -121,6 +121,11 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
         not_homepage:
 
+        // show_add
+        if ('/add' === $pathinfo) {
+            return array (  '_controller' => 'AppBundle\\Controller\\ShowController::createAction',  '_route' => 'show_add',);
+        }
+
         // show_list
         if ('' === $trimmedPathinfo) {
             $ret = array (  '_controller' => 'AppBundle\\Controller\\ShowController::listAction',  '_route' => 'show_list',);
