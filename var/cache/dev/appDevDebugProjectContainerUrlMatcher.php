@@ -105,10 +105,27 @@ class appDevDebugProjectContainerUrlMatcher extends Symfony\Bundle\FrameworkBund
         }
 
         // homepage
+        if (0 === strpos($pathinfo, '/api') && preg_match('#^/api(?:/(?P<username>.*))?$#s', $pathinfo, $matches)) {
+            if ('GET' !== $canonicalMethod) {
+                $allow[] = 'GET';
+                goto not_homepage;
+            }
+
+            $ret = $this->mergeDefaults(array_replace($matches, array('_route' => 'homepage')), array (  'username' => '',  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',));
+            $requiredSchemes = array (  'http' => 0,  'https' => 1,);
+            if (!isset($requiredSchemes[$scheme])) {
+                return array_replace($ret, $this->redirect($rawPathinfo, 'homepage', key($requiredSchemes)));
+            }
+
+            return $ret;
+        }
+        not_homepage:
+
+        // show_list
         if ('' === $trimmedPathinfo) {
-            $ret = array (  '_controller' => 'AppBundle\\Controller\\DefaultController::indexAction',  '_route' => 'homepage',);
+            $ret = array (  '_controller' => 'AppBundle\\Controller\\ShowController::listAction',  '_route' => 'show_list',);
             if (substr($pathinfo, -1) !== '/') {
-                return array_replace($ret, $this->redirect($rawPathinfo.'/', 'homepage'));
+                return array_replace($ret, $this->redirect($rawPathinfo.'/', 'show_list'));
             }
 
             return $ret;
