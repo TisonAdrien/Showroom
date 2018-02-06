@@ -18,6 +18,7 @@
         </div>
         <div class="card-footer text-muted">
             Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
+            <a href="/update/{{ show.getId() }}" class="btn btn-primary" style="float:right;">Update</a>
         </div>
     </div>
     {% endfor %}

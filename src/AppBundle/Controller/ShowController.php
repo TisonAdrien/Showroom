@@ -92,7 +92,8 @@ class ShowController extends Controller
         }
 
         return $this->render('show/add.html.twig', array(
-            'showForm' => $showForm->createView()
+            'showForm' => $showForm->createView(),
+            'show' => $show
         ));
     }
 

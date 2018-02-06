@@ -1,8 +1,14 @@
 {% extends "show/base.html.twig" %}
 
+{% if app.request.attributes.get('_route') == 'show_update' %}
+    {% set action = "Update" %}
+{% endif %}
+{% if app.request.attributes.get('_route') == 'show_add' %}
+    {% set action = "Add" %}
+{% endif %}
 
 {% block pageHeading %}
-    Add a Show
+    {{ action }} a Show !
 {% endblock pageHeading %}
 
 {% block content %}
@@ -12,11 +18,17 @@
     {{ form_start(showForm, {"attr":{"novalidate":"novalidate"}}) }}
 
         {{ form_rest(showForm) }}
+        {% if app.request.attributes.get('_route') == 'show_update' %}
+            <div class="form-group">
+                <label class="form-control-label">Current picture</label>
+                <div><img class="card-img-top" src="/upload/{{ show.getMainPicture() }}" alt="Card image cap" style="max-width: 200px;"></div>
+            </div>
+        {% endif %}
         <div class="container">
             <div class="row">
                 <div class="col-sm-5">&nbsp;</div>
                 <div class="col-sm-7">
-                    <input type="submit" class="btn btn-secondary" value="Create">
+                    <input type="submit" class="btn btn-secondary" value="{{ action }}">
                 </div>
             </div>
         </div>

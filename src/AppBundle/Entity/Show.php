@@ -17,6 +17,10 @@ class Show
      */
     private $id;
 
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return mixed
