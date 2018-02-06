@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Type\ShowType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Show;
 
 
 /**
@@ -23,9 +25,30 @@ class ShowController extends Controller
     /**
      * @Route("/add",name="add")
      */
-    public function createAction()
+    public function createAction(Request $request)
     {
-        $form = $this->createForm(ShowType::class);
+        $show = new Show();
+        $form = $this->createForm(ShowType::class,$show);
+
+        $form->handleRequest($request);
+
+        if($form->isValid() && $form->isSubmitted()){
+            //dump($show); die;
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($show);
+            $em->flush();
+
+            //Upload File
+
+            //Save
+
+            //Message flash
+            $this->addFlash('success','You successfully added a new Show');
+
+            return $this->redirectToRoute('show_list');
+        }
+
         return $this->render(
             'show/add.html.twig',
             [

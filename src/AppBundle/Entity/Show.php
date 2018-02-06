@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity
@@ -42,7 +43,7 @@ class Show
     }
 
     /**
-     * @return mixed
+     * @return Category
      */
     public function getCategory()
     {
@@ -50,9 +51,9 @@ class Show
     }
 
     /**
-     * @param mixed $category
+     * @param Category $category
      */
-    public function setCategory($category)
+    public function setCategory(Category $category)
     {
         $this->category = $category;
     }
@@ -106,7 +107,7 @@ class Show
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getReleaseDate()
     {
@@ -114,15 +115,15 @@ class Show
     }
 
     /**
-     * @param mixed $releaseDate
+     * @param \DateTime $releaseDate
      */
-    public function setReleaseDate($releaseDate)
+    public function setReleaseDate(\DateTime $releaseDate)
     {
         $this->releaseDate = $releaseDate;
     }
 
     /**
-     * @return mixed
+     * @return UploadedFile
      */
     public function getMainPicture()
     {
@@ -130,9 +131,9 @@ class Show
     }
 
     /**
-     * @param mixed $mainPicture
+     * @param UploadedFile $mainPicture
      */
-    public function setMainPicture($mainPicture)
+    public function setMainPicture(UploadedFile $mainPicture)
     {
         $this->mainPicture = $mainPicture;
     }
