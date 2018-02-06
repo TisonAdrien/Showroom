@@ -8,6 +8,18 @@
 {% block content %}
 
     <!-- Add form -->
-    {{ form(showForm) }}
+    <div>
+    {{ form_start(showForm, {"attr":{"novalidate":"novalidate"}}) }}
 
+        {{ form_rest(showForm) }}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">&nbsp;</div>
+                <div class="col-sm-7">
+                    <input type="submit" class="btn btn-secondary" value="Create">
+                </div>
+            </div>
+        </div>
+    {{ form_end(showForm) }}
+    </div>
 {% endblock content %}
