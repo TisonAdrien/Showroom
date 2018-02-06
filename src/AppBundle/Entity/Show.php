@@ -16,10 +16,7 @@ class Show
      * @ORM\Column(type="integer")
      */
     private $id;
-    /**
-     * @ORM\Column
-     */
-    private $name;
+
 
     /**
      * @return mixed
@@ -136,34 +133,57 @@ class Show
     /**
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="category_id",referencedColumnName="id")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create","update"})
      */
     private $category;
+
+    /**
+     * @ORM\Column
+     * @Assert\NotBlank(groups={"create","update"})
+     */
+    private $name;
+
     /**
      * @ORM\Column(type="text")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create","update"})
      */
     private $abstract;
     /**
      * @ORM\Column
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create","update"})
      */
     private $country;
     /**
      * @ORM\Column
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create","update"})
      */
     private $author;
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
+     * @Assert\NotBlank(groups={"create","update"})
      */
     private $releaseDate;
     /**
      * @ORM\Column
-     * @Assert\Image(minHeight=300, minWidth=750)
+     * @Assert\Image(minHeight=300, minWidth=750, groups={"create"})
      */
     private $mainPicture;
 
+    private $tmpPicture;
 
+    /**
+     * @return mixed
+     */
+    public function getTmpPicture()
+    {
+        return $this->tmpPicture;
+    }
+
+    /**
+     * @param mixed $tmpPicture
+     */
+    public function setTmpPicture($tmpPicture)
+    {
+        $this->tmpPicture = $tmpPicture;
+    }
 }

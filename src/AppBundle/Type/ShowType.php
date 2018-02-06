@@ -16,6 +16,8 @@ class ShowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $now = new \DateTime();
+        $year = $now->format("Y");
         $builder
             ->add('name')
             ->add('category', EntityType::class, array(
@@ -32,8 +34,12 @@ class ShowType extends AbstractType
             ->add('abstract', TextareaType::class)
             ->add('country',CountryType::class, array('preferred_choices' => 'FR'))
             ->add('author')
-            ->add('releaseDate', DateType::class)
-            ->add('mainPicture', FileType::class)
+            ->add('releaseDate', DateType::class, array(
+                'years' => range($year -10,$year +2)
+            ))
+            ->add('tmpPicture', FileType::class, array(
+                'label' => 'Main picture'
+            ))
         ;
     }
 }

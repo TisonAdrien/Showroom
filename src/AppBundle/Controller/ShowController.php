@@ -42,7 +42,7 @@ class ShowController extends Controller
 
         if($form->isValid() && $form->isSubmitted()){
             //Upload file
-            $generatedFileName = $fileUploader->upload($show->getMainPicture(),$show->getCategory()->getName());
+            $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
             $show->setMainPicture($generatedFileName);
             //Save data
             $em = $this->getDoctrine()->getManager();
@@ -61,6 +61,39 @@ class ShowController extends Controller
                 'showForm' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Route("/update/{id}", name="update")
+     */
+    public function updateAction(Show $show, Request $request, FileUploader $fileUploader)
+    {
+        $showForm = $this->createForm(ShowType::class, $show, array(
+            'validation_groups' => array('update')
+        ));
+
+        $showForm->handleRequest($request);
+
+        if($showForm->isValid() && $showForm->isSubmitted()){
+            //Upload file
+            if($show->getTmpPicture() != null){
+                $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
+                $show->setMainPicture($generatedFileName);
+            }
+            
+            //Update data
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($show);
+            $em->flush();
+
+            $this->addFlash('success','You successfully update the show !');
+
+            return $this->redirectToRoute('show_list');
+        }
+
+        return $this->render('show/add.html.twig', array(
+            'showForm' => $showForm->createView()
+        ));
     }
 
     public function categoriesAction()
