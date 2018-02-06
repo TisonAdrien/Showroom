@@ -137,6 +137,10 @@ class Show
         $this->mainPicture = $mainPicture;
     }
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(name="category_id",referencedColumnName="id")
+     */
     private $category;
     /**
      * @ORM\Column(type="text")
