@@ -531,6 +531,10 @@
     <service id="AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
     </service>
+    <service id="AppBundle\File\FileUploader" class="AppBundle\File\FileUploader" public="false" autowire="true" autoconfigure="true">
+      <argument>/Users/digital/Showroom</argument>
+      <argument>/upload</argument>
+    </service>
     <service id="AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -553,7 +557,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.696ebhb"/>
+      <argument type="service" id="service_locator.bxhkj1i"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -1615,14 +1619,6 @@
       </call>
       <call method="addListener">
         <argument>kernel.request</argument>
-        <argument type="collection">
-          <argument type="service" id="debug.debug_handlers_listener"/>
-          <argument>configure</argument>
-        </argument>
-        <argument>2048</argument>
-      </call>
-      <call method="addListener">
-        <argument>console.command</argument>
         <argument type="collection">
           <argument type="service" id="debug.debug_handlers_listener"/>
           <argument>configure</argument>
@@ -3628,13 +3624,18 @@
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
-    <service id="service_locator.ycgkfke" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.oj5flxp" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="fileUploader" type="service" id="AppBundle\File\FileUploader" on-invalid="ignore"/>
+      </argument>
     </service>
-    <service id="service_locator.696ebhb" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.bxhkj1i" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
-      <argument type="collection"/>
+      <argument type="collection">
+        <argument key="AppBundle\Controller\ShowController:createAction" type="service" id="service_locator.oj5flxp"/>
+        <argument key="AppBundle\Controller\ShowController::createAction" type="service" id="service_locator.oj5flxp"/>
+      </argument>
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
       <argument type="service" id="service_locator.iv.jde6"/>

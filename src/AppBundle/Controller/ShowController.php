@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use AppBundle\Entity\Show;
+use AppBundle\File\FileUploader;
 
 
 /**
@@ -25,7 +26,7 @@ class ShowController extends Controller
     /**
      * @Route("/add",name="add")
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request, FileUploader $fileUploader)
     {
         $show = new Show();
         $form = $this->createForm(ShowType::class,$show);
@@ -34,9 +35,7 @@ class ShowController extends Controller
 
         if($form->isValid() && $form->isSubmitted()){
             //Upload file
-            $generatedFileName = time().'_'.$show->getCategory()->getName().".".$show->getMainPicture()->guessClientExtension();
-            $path = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file');
-            $show->getMainPicture()->move($path, $generatedFileName);
+            $generatedFileName = $fileUploader->upload($show->getMainPicture(),$show->getCategory()->getName());
             $show->setMainPicture($generatedFileName);
 
             //Save data
