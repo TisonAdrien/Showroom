@@ -3,10 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
  * @ORM\Entity
+ * @UniqueEntity("name")
  */
 class Category
 {
@@ -18,7 +20,7 @@ class Category
     private $id;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(unique=true)
      */
     private $name;
 

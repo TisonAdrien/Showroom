@@ -30,7 +30,7 @@ class ShowType extends AbstractType
                 'placeholder' => 'Choose the category'
             ))
             ->add('abstract', TextareaType::class)
-            ->add('country',CountryType::class)
+            ->add('country',CountryType::class, array('preferred_choices' => 'FR'))
             ->add('author')
             ->add('releaseDate', DateType::class)
             ->add('mainPicture', FileType::class)

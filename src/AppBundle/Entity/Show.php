@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -136,26 +136,32 @@ class Show
     /**
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="category_id",referencedColumnName="id")
+     * @Assert\NotBlank
      */
     private $category;
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
      */
     private $abstract;
     /**
      * @ORM\Column
+     * @Assert\NotBlank
      */
     private $country;
     /**
      * @ORM\Column
+     * @Assert\NotBlank
      */
     private $author;
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     private $releaseDate;
     /**
      * @ORM\Column
+     * @Assert\Image(minHeight=300, minWidth=750)
      */
     private $mainPicture;
 

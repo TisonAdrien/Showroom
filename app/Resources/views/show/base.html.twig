@@ -18,6 +18,14 @@
         {{ parent() }} by Dreamteam {% if app.environment != "prod" %} - Current env = {{ app.environment }}{% endif %}
     {% endblock menu_title %}
 {% endembed %}
+
+{% for label, messages in app.flashes %}
+<div class="alert alert-{{ label }}" role="alert">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endfor %}
 <!-- Page Content -->
 <div class="container">
     <div class="row">
