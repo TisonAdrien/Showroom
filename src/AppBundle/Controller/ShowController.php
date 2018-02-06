@@ -33,15 +33,16 @@ class ShowController extends Controller
         $form->handleRequest($request);
 
         if($form->isValid() && $form->isSubmitted()){
-            //dump($show); die;
+            //Upload file
+            $generatedFileName = time().'_'.$show->getCategory()->getName().".".$show->getMainPicture()->guessClientExtension();
+            $path = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file');
+            $show->getMainPicture()->move($path, $generatedFileName);
+            $show->setMainPicture($generatedFileName);
 
+            //Save data
             $em = $this->getDoctrine()->getManager();
             $em->persist($show);
             $em->flush();
-
-            //Upload File
-
-            //Save
 
             //Message flash
             $this->addFlash('success','You successfully added a new Show');
@@ -59,10 +60,12 @@ class ShowController extends Controller
 
     public function categoriesAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository("AppBundle:Category")->findAll();
         return $this->render(
             "_include/categories.html.twig",
             [
-                'categories' => ['Web Design', 'HTML', 'Freebies', 'Javascript', 'CSS', 'Tutorials']
+                'categories' => $categories
             ]
         );
     }

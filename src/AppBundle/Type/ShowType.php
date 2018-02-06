@@ -3,6 +3,8 @@
 namespace AppBundle\Type;
 
 
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -16,7 +18,17 @@ class ShowType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('category')
+            ->add('category', EntityType::class, array(
+                'class' => 'AppBundle:Category',
+                'query_builder' => function(EntityRepository $er)
+                {
+                    return $er->createQueryBuilder('c')->orderBy('c.name', 'ASC');
+                },
+                'choice_label' => 'name',
+                'expanded' => false, // Radio button - check box
+                'multiple' => false, // Selection multiple
+                'placeholder' => 'Choose the category'
+            ))
             ->add('abstract', TextareaType::class)
             ->add('country',CountryType::class)
             ->add('author')

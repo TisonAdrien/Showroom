@@ -1,0 +1,23 @@
+{% extends "show/base.html.twig" %}
+
+{% block pageHeading %}
+Create a new category
+{% endblock pageHeading %}
+
+{% block content %}
+    <!-- Add form -->
+    <div>
+        {{ form_start(categoryForm, {"attr":{"novalidate":"novalidate"}}) }}
+
+        {{ form_rest(categoryForm) }}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">&nbsp;</div>
+                <div class="col-sm-7">
+                    <input type="submit" class="btn btn-secondary" value="Create">
+                </div>
+            </div>
+        </div>
+        {{ form_end(categoryForm) }}
+    </div>
+{% endblock content %}

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: digital
- * Date: 05/02/2018
- * Time: 16:26
- */
 
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +6,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity
+ * @ORM\Table(name="s_show")
  */
 class Show
 {
@@ -123,7 +118,7 @@ class Show
     }
 
     /**
-     * @return UploadedFile
+     * @return mixed
      */
     public function getMainPicture()
     {
@@ -131,9 +126,9 @@ class Show
     }
 
     /**
-     * @param UploadedFile $mainPicture
+     * @param mixed $mainPicture
      */
-    public function setMainPicture(UploadedFile $mainPicture)
+    public function setMainPicture($mainPicture)
     {
         $this->mainPicture = $mainPicture;
     }

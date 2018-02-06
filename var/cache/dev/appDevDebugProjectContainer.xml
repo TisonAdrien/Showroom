@@ -111,6 +111,7 @@
     <parameter key="mailer_password">null</parameter>
     <parameter key="secret">1f28abbfa6600ba037ec41b2de32ecbbbf4ff75f</parameter>
     <parameter key="locale">en</parameter>
+    <parameter key="upload_directory_file">/upload</parameter>
     <parameter key="fragment.renderer.hinclude.global_template"></parameter>
     <parameter key="fragment.path">/_fragment</parameter>
     <parameter key="kernel.secret">1f28abbfa6600ba037ec41b2de32ecbbbf4ff75f</parameter>
@@ -521,11 +522,17 @@
   <services>
     <service id="service_container" class="Symfony\Component\DependencyInjection\ContainerInterface" public="true" synthetic="true"/>
     <service id="AppBundle\AppBundle" class="AppBundle\AppBundle" public="false" autowire="true" autoconfigure="true"/>
+    <service id="AppBundle\Controller\CategoryController" class="AppBundle\Controller\CategoryController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+    </service>
     <service id="AppBundle\Controller\DefaultController" class="AppBundle\Controller\DefaultController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
     </service>
     <service id="AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
+    </service>
+    <service id="AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
     </service>
     <service id="AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
@@ -546,7 +553,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.jrv7wxy"/>
+      <argument type="service" id="service_locator.696ebhb"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -778,6 +785,7 @@
         <argument>Symfony\Bridge\Doctrine\Form\Type</argument>
       </argument>
       <argument type="collection">
+        <argument>AppBundle\Type\CategoryType</argument>
         <argument>AppBundle\Type\ShowType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\ChoiceType</argument>
@@ -990,7 +998,7 @@
       <argument type="service" id="form.resolved_type_factory"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension" public="false">
-      <argument type="service" id="service_locator.lj66xnj"/>
+      <argument type="service" id="service_locator.hrxffc8"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.http_foundation"/>
@@ -3594,12 +3602,20 @@
         <argument>server:log</argument>
       </call>
     </service>
+    <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\CategoryController" class="AppBundle\Controller\CategoryController" public="true" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Controller\CategoryController" class="AppBundle\Controller\CategoryController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\DefaultController" class="AppBundle\Controller\DefaultController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\DefaultController" class="AppBundle\Controller\DefaultController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="service_locator.vbhdain" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection"/>
+    </service>
     <service id="service_locator.f4ewnep" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection"/>
@@ -3608,7 +3624,7 @@
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
-    <service id="service_locator.jrv7wxy" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.696ebhb" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
@@ -3718,9 +3734,10 @@
         <argument key="inline" type="service" id="fragment.renderer.inline"/>
       </argument>
     </service>
-    <service id="service_locator.lj66xnj" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.hrxffc8" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="AppBundle\Type\CategoryType" type="service" id="AppBundle\Type\CategoryType"/>
         <argument key="AppBundle\Type\ShowType" type="service" id="AppBundle\Type\ShowType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service" id="form.type.entity"/>
         <argument key="Symfony\Component\Form\Extension\Core\Type\ChoiceType" type="service" id="form.type.choice"/>
