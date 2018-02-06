@@ -20,7 +20,14 @@ class ShowController extends Controller
      */
     public function listAction()
     {
-        return $this->render('show/list.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $shows = $em->getRepository("AppBundle:Show")->findAll();
+        return $this->render(
+            'show/list.html.twig',
+            [
+            'shows' => $shows
+            ]
+        );
     }
 
     /**
@@ -37,7 +44,6 @@ class ShowController extends Controller
             //Upload file
             $generatedFileName = $fileUploader->upload($show->getMainPicture(),$show->getCategory()->getName());
             $show->setMainPicture($generatedFileName);
-
             //Save data
             $em = $this->getDoctrine()->getManager();
             $em->persist($show);
