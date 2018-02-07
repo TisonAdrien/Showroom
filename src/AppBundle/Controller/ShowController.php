@@ -25,7 +25,7 @@ class ShowController extends Controller
         return $this->render(
             'show/list.html.twig',
             [
-            'shows' => $shows
+                'shows' => $shows
             ]
         );
     }
@@ -37,9 +37,7 @@ class ShowController extends Controller
     {
         $show = new Show();
         $form = $this->createForm(ShowType::class,$show);
-
         $form->handleRequest($request);
-
         if($form->isValid() && $form->isSubmitted()){
             //Upload file
             $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
@@ -48,19 +46,11 @@ class ShowController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($show);
             $em->flush();
-
             //Message flash
             $this->addFlash('success','You successfully added a new Show');
-
             return $this->redirectToRoute('show_list');
         }
-
-        return $this->render(
-            'show/add.html.twig',
-            [
-                'showForm' => $form->createView()
-            ]
-        );
+        return $this->render('show/add.html.twig',['showForm' => $form->createView()]);
     }
 
     /**
@@ -68,33 +58,22 @@ class ShowController extends Controller
      */
     public function updateAction(Show $show, Request $request, FileUploader $fileUploader)
     {
-        $showForm = $this->createForm(ShowType::class, $show, array(
-            'validation_groups' => array('update')
-        ));
-
+        $showForm = $this->createForm(ShowType::class, $show, array('validation_groups' => array('update')));
         $showForm->handleRequest($request);
-
         if($showForm->isValid() && $showForm->isSubmitted()){
             //Upload file
             if($show->getTmpPicture() != null){
                 $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
                 $show->setMainPicture($generatedFileName);
             }
-            
             //Update data
             $em = $this->getDoctrine()->getManager();
             $em->persist($show);
             $em->flush();
-
             $this->addFlash('success','You successfully update the show !');
-
             return $this->redirectToRoute('show_list');
         }
-
-        return $this->render('show/add.html.twig', array(
-            'showForm' => $showForm->createView(),
-            'show' => $show
-        ));
+        return $this->render('show/add.html.twig', array('showForm' => $showForm->createView(),'show' => $show));
     }
 
     public function categoriesAction()

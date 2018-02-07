@@ -20,19 +20,14 @@ class CategoryController extends Controller
     {
         $category = new Category();
         $form = $this->createForm(CategoryType::class,$category);
-
         $form->handleRequest($request);
-
         if($form->isValid() && $form->isSubmitted()){
-
             //Save
             $em = $this->getDoctrine()->getManager();
             $em->persist($category);
             $em->flush();
-
             //Message flash
             $this->addFlash('success','You successfully added a new Category');
-
             return $this->redirectToRoute('show_list');
         }
 
