@@ -1,11 +1,4 @@
 # Showroom
-========
-
-<p align="center">
-	<a href="https://symfony.com" target="_blank">
-    	<img src="https://symfony.com/images/v5/pictos/home-main-illu.svg">
-	</a>
-</p>
 
 A [Symfony][1] project created for learn how to use this framework.
 This is a simple website where we can share shows with peoples.
