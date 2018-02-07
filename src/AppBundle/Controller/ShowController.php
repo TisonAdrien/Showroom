@@ -26,8 +26,7 @@ class ShowController extends Controller
         return $this->render(
             'show/list.html.twig',
             [
-                'shows' => $shows,
-                'search' => ''
+                'shows' => $shows
             ]
         );
     }
