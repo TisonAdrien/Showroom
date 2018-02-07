@@ -27,9 +27,9 @@ cd Showroom
 composer install
 ```
 
-Second step : configure your database profile in app/config/parameters.yml
+Second step : configure your database profile in /app/config/parameters.yml
 
-Third step : Create the database
+Third step : Create the database with this command line
 
 ```
 php bin/console doctrine:database:create
