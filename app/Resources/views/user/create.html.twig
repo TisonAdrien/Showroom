@@ -1,0 +1,20 @@
+{% extends "show/base.html.twig" %}
+
+{% block pageHeading %}
+    Create user
+{% endblock pageHeading %}
+
+{% block content %}
+	{{ form_start(userForm, {"attr":{"novalidate":"novalidate"}}) }}
+
+        {{ form_rest(userForm) }}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">&nbsp;</div>
+                <div class="col-sm-7">
+                    <input type="submit" class="btn btn-secondary" value="Create">
+                </div>
+            </div>
+        </div>
+    {{ form_end(userForm) }}
+{% endblock content %}
