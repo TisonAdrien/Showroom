@@ -115,7 +115,7 @@ class ShowController extends Controller
 
     /**
      * @Route("/delete", name="delete")
-     * @Method({"POST"})
+     * @Method({"DELETE"})
      */
     public function deleteAction(Request $request, CsrfTokenManagerInterface $csrfTokenManager)
     {
@@ -125,8 +125,9 @@ class ShowController extends Controller
             throw new NotFoundHttpException('There is no show with the id %d', $showId);
         $csrfToken = new CsrfToken('delete_show', $request->request->get('_csrf_token'));
         if($csrfTokenManager->isTokenValid($csrfToken)){
-            if(strlen($show->getMainPicture()) > 0)
-                unlink($this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture());
+            $picture_dir = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture();
+            if(count(glob($picture_dir)) > 0)
+                unlink($picture_dir);
             $em = $this->getDoctrine()->getManager();
             $em->remove($show);
             $em->flush();

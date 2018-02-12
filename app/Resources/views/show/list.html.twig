@@ -21,6 +21,7 @@
             <form action="{{ path('show_delete') }}" method="POST">
                 <input type="hidden" name="show_id" value="{{ show.getId() }}">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_show') }}">
+                <input type="hidden" name="_method" value="DELETE">
                 <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
             </form>
             <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
