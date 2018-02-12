@@ -557,7 +557,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.00y1y_e"/>
+      <argument type="service" id="service_locator.veh0jgc"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -3640,12 +3640,20 @@
         <argument key="fileUploader" type="service" id="AppBundle\File\FileUploader" on-invalid="ignore"/>
       </argument>
     </service>
-    <service id="service_locator.00y1y_e" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.r6k5vox" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="csrfTokenManager" type="service" id="security.csrf.token_manager" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id="service_locator.veh0jgc" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Controller\ShowController:createAction" type="service" id="service_locator.oj5flxp"/>
+        <argument key="AppBundle\Controller\ShowController:deleteAction" type="service" id="service_locator.r6k5vox"/>
         <argument key="AppBundle\Controller\ShowController:updateAction" type="service" id="service_locator.eo0.ybr"/>
         <argument key="AppBundle\Controller\ShowController::createAction" type="service" id="service_locator.oj5flxp"/>
+        <argument key="AppBundle\Controller\ShowController::deleteAction" type="service" id="service_locator.r6k5vox"/>
         <argument key="AppBundle\Controller\ShowController::updateAction" type="service" id="service_locator.eo0.ybr"/>
       </argument>
     </service>
