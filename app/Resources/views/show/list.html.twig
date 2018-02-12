@@ -18,9 +18,15 @@
         </div>
         <div class="card-footer text-muted">
             Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
-            <a href="/update/{{ show.getId() }}" class="btn btn-primary" style="float:right;">Update</a>
+            <form action="{{ path('show_delete') }}" method="POST">
+                <input type="hidden" name="show_id" value="{{ show.getId() }}">
+                <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
+            </form>
+            <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
         </div>
     </div>
+    {% else %}
+        Sorry there is nothing there
     {% endfor %}
 
 {% endblock content %}

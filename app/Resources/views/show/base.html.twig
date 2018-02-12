@@ -49,9 +49,9 @@
             <div class="card my-4">
                 <h5 class="card-header">Search</h5>
                 <div class="card-body">
-                    <form action="/search" method="post">
+                    <form action="{{ path('show_search') }}" method="post">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" value="{{ search }}" placeholder="Search for...">
+                            <input type="text" name="search" required class="form-control" value="{{ search }}" placeholder="Search for...">
                             <span class="input-group-btn">
                                 <input type="submit" class="btn btn-secondary" value="Go!">
                             </span>
@@ -77,7 +77,7 @@
 <!-- Footer -->
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2017</p>
+        <p class="m-0 text-center text-white">Copyright &copy; Tison Adrien 2018</p>
     </div>
     <!-- /.container -->
 </footer>

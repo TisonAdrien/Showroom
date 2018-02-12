@@ -2,13 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Type\ShowType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Type\ShowType;
 use AppBundle\Entity\Show;
 use AppBundle\File\FileUploader;
 use AppBundle\Repository\ShowRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
@@ -107,5 +108,22 @@ class ShowController extends Controller
                 'categories' => $categories
             ]
         );
+    }
+
+    /**
+     *  @Route("/delete", name="delete")
+     */
+    public function deleteAction(Request $request)
+    {
+        $showId = $request->request->get('show_id');
+        $show = $this->getDoctrine()->getRepository('AppBundle:Show')->findOneBy(['id' => $showId]);
+        if(!$show)
+            throw new NotFoundHttpException('There is no show with the id %d', $showId);
+        if(strlen($show->getMainPicture()) > 0)
+            unlink($this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture());
+        $doctrine->getManager()->remove($show);
+        $doctrine->getManager()->flush();
+        $this->addFlash('success', 'The show has been successfully deleted');
+        return $this->redirectToRoute('show_list');
     }
 }

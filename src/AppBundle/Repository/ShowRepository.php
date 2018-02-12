@@ -15,7 +15,8 @@ class ShowRepository extends EntityRepository
     public function findAllWithName($name)
     {
         $qb = $this->createQueryBuilder('s')
-            ->andWhere("s.name LIKE '%".$name."%'")
+            ->andWhere("LOWER(s.name) LIKE :name")
+            ->setParameter('name', '%'.$name.'%')
             ->orderBy('s.name', 'ASC')
             ->getQuery();
 
