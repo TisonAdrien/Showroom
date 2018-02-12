@@ -2,6 +2,7 @@
 namespace AppBundle\ShowFinder;
 
 use GuzzleHttp\Client;
+use AppBundle\Entity\OMDBShow;
 
 class OMDBShowFinder implements ShowFinderInterface
 {
@@ -15,15 +16,22 @@ class OMDBShowFinder implements ShowFinderInterface
 
 	/**
      * @param $name
-     * @return Show[]
+     * @return OMDBShow
      */
 	public function findAllWithName($name)
 	{
-		// Data : http://www.omdbapi.com/?apikey=8345559e&t=[name]&i=[id]&type=series
-		// Image : http://img.omdbapi.com/?apikey=8345559e&i=[id]
 		$api_response = $this->client->get('?apikey=8345559e&type=series&t="'.$name.'"');
-		dump($name);
-		dump(\GuzzleHttp\json_decode($api_response->getBody(), true)); die();
+		$response = \GuzzleHttp\json_decode($api_response->getBody(), true);
+		if($response["Response"] != "False"){
+			$show_api = new OMDBShow();
+			foreach($response as $field => $value){
+				$method = sprintf('set%s', $field);
+				$show_api->$method($value);
+			}
+		}else{
+			$show_api = null;
+		}
+		return $show_api;
 	}
 
 	public function getName()

@@ -10,25 +10,39 @@
     <!-- Blog Post -->
 
     {% for index, show in shows %}
-    <div class="card mb-4">
-        <img class="card-img-top" src="/upload/{{ show.getMainPicture() }}" alt="Card image cap">
-        <div class="card-body">
-            <h2 class="card-title">{{ show.getName() }}</h2>
-            <p class="card-text">{{ show.getAbstract() }}</p>
+        <div class="card mb-4">
+            <img class="card-img-top" src="/upload/{{ show.getMainPicture() }}" alt="Card image cap">
+            <div class="card-body">
+                <h2 class="card-title">{{ show.getName() }}</h2>
+                <p class="card-text">{{ show.getAbstract() }}</p>
+            </div>
+            <div class="card-footer text-muted">
+                Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
+                <form action="{{ path('show_delete') }}" method="POST">
+                    <input type="hidden" name="show_id" value="{{ show.getId() }}">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_show') }}">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
+                </form>
+                <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
+            </div>
         </div>
-        <div class="card-footer text-muted">
-            Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
-            <form action="{{ path('show_delete') }}" method="POST">
-                <input type="hidden" name="show_id" value="{{ show.getId() }}">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_show') }}">
-                <input type="hidden" name="_method" value="DELETE">
-                <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
-            </form>
-            <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
-        </div>
-    </div>
     {% else %}
-        Sorry there is nothing there
+        {% if show_api is null %}
+            Sorry there is nothing in this Website... :(
+        {% endif %}
     {% endfor %}
-
+    {% if show_api is not null %}
+        <h2>There is a result in OMDB :</h2>
+        <div class="card mb-4">
+            <img class="card-img-top" src="{{ show_api.getPoster() }}" alt="Card image cap">
+            <div class="card-body">
+                <h2 class="card-title">{{ show_api.getTitle() }}</h2>
+                <p class="card-text">{{ show_api.getPlot() }}</p>
+            </div>
+            <div class="card-footer text-muted">
+                Posted on {{ show_api.getReleased() }} by {{ show_api.getWriter() }}
+            </div>
+        </div>
+    {% endif %}
 {% endblock content %}

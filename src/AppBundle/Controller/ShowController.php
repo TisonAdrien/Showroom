@@ -27,16 +27,20 @@ class ShowController extends Controller
     {
         $session = $request->getSession();
         if($session->has('query_search_shows')){
-            $shows = $showFinder->searchByName($session->get('query_search_shows'));
+            $response = $showFinder->searchByName($session->get('query_search_shows'));
+            $shows = $response["Local Database"];
+            $show_api = $response["IMDB API"];
             $session->remove('query_search_shows');
         }else{
             $em = $this->getDoctrine()->getManager();
             $shows = $em->getRepository("AppBundle:Show")->findAll();
+            $show_api = null;
         }
         return $this->render(
             'show/list.html.twig',
             [
-                'shows' => $shows
+                'shows' => $shows,
+                'show_api' => $show_api
             ]
         );
     }
