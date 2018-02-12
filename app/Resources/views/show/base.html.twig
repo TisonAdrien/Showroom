@@ -26,9 +26,6 @@
     {% endfor %}
 </div>
 {% endfor %}
-{% if search is not defined %}
-    {% set search = "" %}
-{% endif %}
 
 <!-- Page Content -->
 <div class="container">
@@ -51,7 +48,7 @@
                 <div class="card-body">
                     <form action="{{ path('show_search') }}" method="post">
                         <div class="input-group">
-                            <input type="text" name="search" required class="form-control" value="{{ search }}" placeholder="Search for...">
+                            <input type="text" name="search" required class="form-control" placeholder="Search for...">
                             <span class="input-group-btn">
                                 <input type="submit" class="btn btn-secondary" value="Go!">
                             </span>
@@ -61,14 +58,6 @@
             </div>
 
             {{ render(controller("AppBundle\\Controller\\ShowController::categoriesAction")) }}
-
-            <!-- Side Widget -->
-            <div class="card my-4">
-                <h5 class="card-header">Side Widget</h5>
-                <div class="card-body">
-                    You can put anything you want inside of these side widgets. They are easy to use, and feature the new Bootstrap 4 card containers!
-                </div>
-            </div>
         </div>
     </div>
     <!-- /.row -->

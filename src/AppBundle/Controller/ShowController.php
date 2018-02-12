@@ -8,6 +8,7 @@ use AppBundle\Type\ShowType;
 use AppBundle\Entity\Show;
 use AppBundle\File\FileUploader;
 use AppBundle\Repository\ShowRepository;
+use AppBundle\ShowFinder\ShowFinder;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -22,10 +23,16 @@ class ShowController extends Controller
     /**
      * @Route("/", name="list")
      */
-    public function listAction()
+    public function listAction(Request $request, ShowFinder $showFinder)
     {
-        $em = $this->getDoctrine()->getManager();
-        $shows = $em->getRepository("AppBundle:Show")->findAll();
+        $session = $request->getSession();
+        if($session->has('query_search_shows')){
+            $shows = $showFinder->searchByName($session->get('query_search_shows'));
+            $session->remove('query_search_shows');
+        }else{
+            $em = $this->getDoctrine()->getManager();
+            $shows = $em->getRepository("AppBundle:Show")->findAll();
+        }
         return $this->render(
             'show/list.html.twig',
             [
@@ -40,16 +47,8 @@ class ShowController extends Controller
      */
     public function searchAction(Request $request)
     {
-        $name = $request->request->get('search');
-        $em = $this->getDoctrine()->getManager();
-        $shows = $em->getRepository("AppBundle:Show")->findAllWithName($name);
-        return $this->render(
-            'show/list.html.twig',
-            [
-                'shows' => $shows,
-                'search' => $name
-            ]
-        );
+        $request->getSession()->set('query_search_shows', $request->request->get('search'));
+        return $this->redirectToRoute('show_list');
     }
 
     /**

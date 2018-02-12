@@ -17,6 +17,7 @@
       <parameter key="DoctrineBundle">Doctrine\Bundle\DoctrineBundle\DoctrineBundle</parameter>
       <parameter key="SensioFrameworkExtraBundle">Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle</parameter>
       <parameter key="DoctrineMigrationsBundle">Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle</parameter>
+      <parameter key="CsaGuzzleBundle">Csa\Bundle\GuzzleBundle\CsaGuzzleBundle</parameter>
       <parameter key="AppBundle">AppBundle\AppBundle</parameter>
       <parameter key="DebugBundle">Symfony\Bundle\DebugBundle\DebugBundle</parameter>
       <parameter key="WebProfilerBundle">Symfony\Bundle\WebProfilerBundle\WebProfilerBundle</parameter>
@@ -64,6 +65,11 @@
         <parameter key="parent">null</parameter>
         <parameter key="path">C:\wamp64\www\Showroom\vendor\doctrine\doctrine-migrations-bundle</parameter>
         <parameter key="namespace">Doctrine\Bundle\MigrationsBundle</parameter>
+      </parameter>
+      <parameter key="CsaGuzzleBundle" type="collection">
+        <parameter key="parent">null</parameter>
+        <parameter key="path">C:\wamp64\www\Showroom\vendor\csa\guzzle-bundle\src</parameter>
+        <parameter key="namespace">Csa\Bundle\GuzzleBundle</parameter>
       </parameter>
       <parameter key="AppBundle" type="collection">
         <parameter key="parent">null</parameter>
@@ -408,6 +414,10 @@
         <parameter>dump</parameter>
         <parameter>@Debug/Profiler/dump.html.twig</parameter>
       </parameter>
+      <parameter key="csa_guzzle.data_collector.guzzle" type="collection">
+        <parameter>guzzle</parameter>
+        <parameter>@CsaGuzzle/Collector/guzzle.html.twig</parameter>
+      </parameter>
       <parameter key="data_collector.config" type="collection">
         <parameter>config</parameter>
         <parameter>@WebProfiler/Collector/config.html.twig</parameter>
@@ -534,9 +544,26 @@
     <service id="AppBundle\Controller\UserController" class="AppBundle\Controller\UserController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
     </service>
+    <service id="AppBundle\DependencyInjection\ShowFinderCompilerPass" class="AppBundle\DependencyInjection\ShowFinderCompilerPass" public="false" autowire="true" autoconfigure="true"/>
     <service id="AppBundle\File\FileUploader" class="AppBundle\File\FileUploader" public="false" autowire="true" autoconfigure="true">
       <argument>C:\wamp64\www\Showroom</argument>
       <argument>/upload</argument>
+    </service>
+    <service id="AppBundle\ShowFinder\DBShowFinder" class="AppBundle\ShowFinder\DBShowFinder" public="false" autowire="true" autoconfigure="true">
+      <tag name="show.finder"/>
+      <argument type="service" id="doctrine"/>
+    </service>
+    <service id="AppBundle\ShowFinder\OMDBShowFinder" class="AppBundle\ShowFinder\OMDBShowFinder" public="false" autowire="true" autoconfigure="true">
+      <tag name="show.finder"/>
+      <argument type="service" id="csa_guzzle.client.OMDB_api"/>
+    </service>
+    <service id="AppBundle\ShowFinder\ShowFinder" class="AppBundle\ShowFinder\ShowFinder" public="false" autowire="true" autoconfigure="true">
+      <call method="addFinder">
+        <argument type="service" id="AppBundle\ShowFinder\DBShowFinder"/>
+      </call>
+      <call method="addFinder">
+        <argument type="service" id="AppBundle\ShowFinder\OMDBShowFinder"/>
+      </call>
     </service>
     <service id="AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
@@ -563,7 +590,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.szdvevb"/>
+      <argument type="service" id="service_locator.yunrc.l"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -1335,6 +1362,9 @@
       </call>
       <call method="add">
         <argument type="service" id="data_collector.dump"/>
+      </call>
+      <call method="add">
+        <argument type="service" id="csa_guzzle.data_collector.guzzle"/>
       </call>
       <call method="add">
         <argument type="service" id="data_collector.config"/>
@@ -2607,6 +2637,9 @@
         <argument type="service" id="doctrine.twig.doctrine_extension"/>
       </call>
       <call method="addExtension">
+        <argument type="service" id="csa_guzzle.twig.extension"/>
+      </call>
+      <call method="addExtension">
         <argument type="service" id="twig.extension.dump"/>
       </call>
       <call method="addExtension">
@@ -2702,6 +2735,14 @@
       <call method="addPath">
         <argument>C:\wamp64\www\Showroom\vendor\doctrine\doctrine-bundle/Resources/views</argument>
         <argument>!Doctrine</argument>
+      </call>
+      <call method="addPath">
+        <argument>C:\wamp64\www\Showroom\vendor\csa\guzzle-bundle\src/Resources/views</argument>
+        <argument>CsaGuzzle</argument>
+      </call>
+      <call method="addPath">
+        <argument>C:\wamp64\www\Showroom\vendor\csa\guzzle-bundle\src/Resources/views</argument>
+        <argument>!CsaGuzzle</argument>
       </call>
       <call method="addPath">
         <argument>C:\wamp64\www\Showroom\vendor\symfony\symfony\src\Symfony\Bundle\DebugBundle/Resources/views</argument>
@@ -3478,6 +3519,60 @@
     <service id="doctrine_migrations.version_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsVersionDoctrineCommand">
       <tag name="console.command"/>
     </service>
+    <service id="csa_guzzle.middleware.stopwatch" class="Csa\GuzzleHttp\Middleware\Stopwatch\StopwatchMiddleware">
+      <tag name="csa_guzzle.middleware" alias="stopwatch"/>
+      <argument type="service" id="debug.stopwatch"/>
+    </service>
+    <service id="csa_guzzle.middleware.history" class="Csa\GuzzleHttp\Middleware\History\HistoryMiddleware">
+      <tag name="csa_guzzle.middleware" alias="history" priority="-1000"/>
+      <argument type="service" id="csa_guzzle.data_collector.history_bag"/>
+    </service>
+    <service id="csa_guzzle.middleware.logger" class="Closure">
+      <tag name="csa_guzzle.middleware" alias="logger"/>
+      <argument type="service" id="monolog.logger"/>
+      <argument type="service" id="csa_guzzle.logger.message_formatter"/>
+      <argument>debug</argument>
+      <factory class="GuzzleHttp\Middleware" method="log"/>
+    </service>
+    <service id="csa_guzzle.logger.message_formatter" class="GuzzleHttp\MessageFormatter" public="false">
+      <argument>{hostname} {req_header_User-Agent} - [{date_common_log}] "{method} {target} HTTP/{version}" {code} {res_header_Content-Length}</argument>
+    </service>
+    <service id="csa_guzzle.data_collector.history_bag" class="Csa\GuzzleHttp\Middleware\History\History"/>
+    <service id="csa_guzzle.data_collector.guzzle" class="Csa\Bundle\GuzzleBundle\DataCollector\GuzzleCollector">
+      <tag name="data_collector" template="@CsaGuzzle/Collector/guzzle.html.twig" id="guzzle"/>
+      <argument>65536</argument>
+      <argument type="service" id="csa_guzzle.data_collector.history_bag"/>
+    </service>
+    <service id="csa_guzzle.twig.extension" class="Csa\Bundle\GuzzleBundle\Twig\Extension\GuzzleExtension">
+      <tag name="twig.extension"/>
+    </service>
+    <service id="csa_guzzle.client.OMDB_api" class="GuzzleHttp\Client" public="true">
+      <tag name="csa_guzzle.client"/>
+      <argument type="collection">
+        <argument key="base_uri">http://www.omdbapi.com/</argument>
+        <argument key="on_stats" type="collection">
+          <argument type="service" id="csa_guzzle.data_collector.history_bag"/>
+          <argument>addStats</argument>
+        </argument>
+        <argument key="handler" type="service">
+          <service class="GuzzleHttp\HandlerStack" public="false">
+            <call method="push">
+              <argument type="service" id="csa_guzzle.middleware.stopwatch"/>
+              <argument>stopwatch</argument>
+            </call>
+            <call method="push">
+              <argument type="service" id="csa_guzzle.middleware.logger"/>
+              <argument>logger</argument>
+            </call>
+            <call method="push">
+              <argument type="service" id="csa_guzzle.middleware.history"/>
+              <argument>history</argument>
+            </call>
+            <factory class="GuzzleHttp\HandlerStack" method="create"/>
+          </service>
+        </argument>
+      </argument>
+    </service>
     <service id="twig.extension.dump" class="Symfony\Bridge\Twig\Extension\DumpExtension" public="false">
       <tag name="twig.extension"/>
       <argument type="service" id="var_dumper.cloner"/>
@@ -3635,6 +3730,12 @@
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
+    <service id="service_locator.hkew9ti" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="showFinder" type="service" id="AppBundle\ShowFinder\ShowFinder" on-invalid="ignore"/>
+      </argument>
+    </service>
     <service id="service_locator.ycgkfke" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection"/>
@@ -3661,14 +3762,16 @@
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
-    <service id="service_locator.szdvevb" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.yunrc.l" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Controller\ShowController:createAction" type="service" id="service_locator.oj5flxp"/>
         <argument key="AppBundle\Controller\ShowController:deleteAction" type="service" id="service_locator.r6k5vox"/>
+        <argument key="AppBundle\Controller\ShowController:listAction" type="service" id="service_locator.hkew9ti"/>
         <argument key="AppBundle\Controller\ShowController:updateAction" type="service" id="service_locator.eo0.ybr"/>
         <argument key="AppBundle\Controller\ShowController::createAction" type="service" id="service_locator.oj5flxp"/>
         <argument key="AppBundle\Controller\ShowController::deleteAction" type="service" id="service_locator.r6k5vox"/>
+        <argument key="AppBundle\Controller\ShowController::listAction" type="service" id="service_locator.hkew9ti"/>
         <argument key="AppBundle\Controller\ShowController::updateAction" type="service" id="service_locator.eo0.ybr"/>
       </argument>
     </service>
