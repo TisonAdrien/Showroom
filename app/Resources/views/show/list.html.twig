@@ -35,13 +35,26 @@
     {% if show_api is not null %}
         <h2>There is a result in OMDB :</h2>
         <div class="card mb-4">
-            <img class="card-img-top" src="{{ show_api.getPoster() }}" alt="Card image cap">
+            {% if show_api.getPoster() != "N/A" %}
+                <img class="card-img-top" src="{{ show_api.getPoster() }}" alt="Card image cap">
+            {% endif %}
             <div class="card-body">
                 <h2 class="card-title">{{ show_api.getTitle() }}</h2>
-                <p class="card-text">{{ show_api.getPlot() }}</p>
+                <p class="card-text">
+                    {% if show_api.getPlot() != "N/A" %}
+                        {{ show_api.getPlot() }}
+                    {% else %}
+                        No description for this show...
+                    {% endif %}
+                </p>
             </div>
             <div class="card-footer text-muted">
-                Posted on {{ show_api.getReleased() }} by {{ show_api.getWriter() }}
+                {% if show_api.getReleased() != "N/A" %}
+                    Posted on {{ show_api.getReleased() }}
+                {% endif %}
+                {% if show_api.getWriter() != "N/A" %}
+                    by {{ show_api.getWriter() }}
+                {% endif %}
             </div>
         </div>
     {% endif %}
