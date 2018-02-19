@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Blog Home - Start Bootstrap Template</title>
+    <title>Showroom</title>
     <!-- Bootstrap core CSS -->
     <link href="{{ asset("vendor/bootstrap/css/bootstrap.min.css") }}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="{{ asset("css/blog-home.css") }}" rel="stylesheet">
 </head>
 <body>
-{#{% include "_include/menu.html.twig" %}#}
+    
 {% embed "_include/menu.html.twig" %}
     {% block menu_title %}
         {{ parent() }} by Dreamteam {% if app.environment != "prod" %} - Current env = {{ app.environment }}{% endif %}
