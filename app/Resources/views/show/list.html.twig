@@ -10,52 +10,31 @@
     <!-- Blog Post -->
 
     {% for index, show in shows %}
+        {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
+            {% set img = asset('upload/' ~ show.getMainPicture) %}
+        {% else %}
+            {% set img = show.getMainPicture %}
+        {% endif %}
         <div class="card mb-4">
-            <img class="card-img-top" src="/upload/{{ show.getMainPicture() }}" alt="Card image cap">
+            <img class="card-img-top" src="{{ img }}" alt="Card image cap">
             <div class="card-body">
                 <h2 class="card-title">{{ show.getName() }}</h2>
                 <p class="card-text">{{ show.getAbstract() }}</p>
             </div>
             <div class="card-footer text-muted">
                 Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
-                <form action="{{ path('show_delete') }}" method="POST">
-                    <input type="hidden" name="show_id" value="{{ show.getId() }}">
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_show') }}">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
-                </form>
-                <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
+                {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
+                    <form action="{{ path('show_delete') }}" method="POST">
+                        <input type="hidden" name="show_id" value="{{ show.getId() }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_show') }}">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
+                    </form>
+                    <a href="{{ path('show_update', {'id':show.getId()}) }}" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
+                {% endif %}
             </div>
         </div>
     {% else %}
-        {% if show_api is null %}
-            Sorry there is nothing in this Website... :(
-        {% endif %}
+        Sorry there is nothing in this Website... :(
     {% endfor %}
-    {% if show_api is not null %}
-        <h2>There is a result in OMDB :</h2>
-        <div class="card mb-4">
-            {% if show_api.getPoster() != "N/A" %}
-                <img class="card-img-top" src="{{ show_api.getPoster() }}" alt="Card image cap">
-            {% endif %}
-            <div class="card-body">
-                <h2 class="card-title">{{ show_api.getTitle() }}</h2>
-                <p class="card-text">
-                    {% if show_api.getPlot() != "N/A" %}
-                        {{ show_api.getPlot() }}
-                    {% else %}
-                        No description for this show...
-                    {% endif %}
-                </p>
-            </div>
-            <div class="card-footer text-muted">
-                {% if show_api.getReleased() != "N/A" %}
-                    Posted on {{ show_api.getReleased() }}
-                {% endif %}
-                {% if show_api.getWriter() != "N/A" %}
-                    by {{ show_api.getWriter() }}
-                {% endif %}
-            </div>
-        </div>
-    {% endif %}
 {% endblock content %}

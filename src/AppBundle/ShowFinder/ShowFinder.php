@@ -12,10 +12,10 @@ class ShowFinder
 
 	public function searchByName($name)
 	{
-		$tmp = array();
+		$results = array();
 		foreach($this->finders as $finder){
-			$tmp[$finder->getName()] = $finder->findAllWithName($name);
+			$results = array_merge($results, $finder->findAllWithName($name));
 		}
-		return $tmp;
+		return $results;
 	}
 }

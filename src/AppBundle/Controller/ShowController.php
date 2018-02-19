@@ -28,8 +28,7 @@ class ShowController extends Controller
         $session = $request->getSession();
         if($session->has('query_search_shows')){
             $response = $showFinder->searchByName($session->get('query_search_shows'));
-            $shows = $response["Local Database"];
-            $show_api = $response["IMDB API"];
+            $shows = $response;
             $session->remove('query_search_shows');
         }else{
             $em = $this->getDoctrine()->getManager();
@@ -39,8 +38,7 @@ class ShowController extends Controller
         return $this->render(
             'show/list.html.twig',
             [
-                'shows' => $shows,
-                'show_api' => $show_api
+                'shows' => $shows
             ]
         );
     }
@@ -67,6 +65,7 @@ class ShowController extends Controller
             //Upload file
             $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
             $show->setMainPicture($generatedFileName);
+            $show->setDataSource(Show::DATA_SOURCE_DB);
             //Save data
             $em = $this->getDoctrine()->getManager();
             $em->persist($show);

@@ -10,3 +10,4 @@ parameters:
     mailer_user: null
     mailer_password: null
     secret: 1f28abbfa6600ba037ec41b2de32ecbbbf4ff75f
+    OMDB_api_key: 8345559e
