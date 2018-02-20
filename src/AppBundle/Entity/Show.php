@@ -3,10 +3,13 @@
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ShowRepository")
  * @ORM\Table(name="s_show")
+ *
+ * @JMS\ExclusionPolicy("none")
  */
 class Show
 {
@@ -193,6 +196,8 @@ class Show
     /**
      * @ORM\Column
      * @Assert\Image(minHeight=300, minWidth=750, groups={"create"})
+     *
+     * @JMS\Exclude
      */
     private $mainPicture;
 
@@ -218,6 +223,8 @@ class Show
 
     /**
      * @ORM\Column(options={"default":"In local database"})
+     *
+     * @JMS\Exclude
      */
     private $dataSource;
 

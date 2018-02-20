@@ -7,12 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table
  * @UniqueEntity("email")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class User implements UserInterface
 {
@@ -25,6 +27,8 @@ class User implements UserInterface
 
 	/**
 	 * @ORM\Column
+	 *
+	 * @JMS\Expose
 	 */
 	private $fullname;
 
