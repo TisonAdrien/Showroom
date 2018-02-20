@@ -21,6 +21,8 @@ class Show
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     *
+     * @JMS\Groups({"show"})
      */
     private $id;
 
@@ -159,24 +161,32 @@ class Show
      * @ORM\ManyToOne(targetEntity="Category")
      * @ORM\JoinColumn(name="category_id",referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $category;
 
     /**
      * @ORM\Column
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $abstract;
 
     /**
      * @ORM\Column
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $country;
 
@@ -184,12 +194,16 @@ class Show
      * @ORM\ManyToOne(targetEntity="User", inversedBy="shows")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $author;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank(groups={"create","update"})
+     *
+     * @JMS\Groups({"show"})
      */
     private $releaseDate;
     

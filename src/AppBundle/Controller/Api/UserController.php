@@ -3,11 +3,17 @@
 namespace AppBundle\Controller\Api;
 
 use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\DeserializationContext;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use AppBundle\Entity\User;
+
 
 
 class UserController extends Controller
@@ -19,7 +25,8 @@ class UserController extends Controller
 	public function listAction(SerializerInterface $serializer)
 	{
 		$users = $this->getDoctrine()->getRepository('AppBundle:User')->findAll();
-		$data = $serializer->serialize($users, 'json');
+		$serializationContext = SerializationContext::create();
+		$data = $serializer->serialize($users, 'json', $serializationContext->setGroups(['user']));
 		return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application\json']);
 	}
 
@@ -29,7 +36,31 @@ class UserController extends Controller
 	 */
 	public function unitAction(SerializerInterface $serializer, User $user)
 	{
-		$data = $serializer->serialize($user, 'json');
+		$serializationContext = SerializationContext::create();
+		$data = $serializer->serialize($user, 'json', $serializationContext->setGroups(['user']));
 		return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application\json']);
+	}
+
+	/**
+	 * @Method({"POST"})
+	 * @Route("/users", name="api_user_create")
+	 */
+	public function createAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EncoderFactoryInterface $encoderFactory)
+	{
+		$serializationContext = DeserializationContext::create();
+		$data = $serializer->deserialize($request->getContent(), User::class, 'json', $serializationContext->setGroups(['user','user_create']));
+		$error = $validator->validate($data);
+		if($error->count() == 0){
+			$encoder = $encoderFactory->getEncoder($data);
+			$password = $encoder->encodePassword($data->getPassword(), null);
+			$data->setPassword($password);
+			$data->setRoles(explode(', ', $data->getRoles()));
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($data);
+			$em->flush();
+			return new Response('User created', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);
+		}else{
+			return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
+		}
 	}
 }

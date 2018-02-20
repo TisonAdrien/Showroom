@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation as JMS;
 
 
@@ -24,10 +25,16 @@ class Category
 
     /**
      * @ORM\Column(unique=true)
+     * @Assert\NotBlank
      *
      * @JMS\Expose
      */
     private $name;
+
+    public function update(Category $category)
+    {
+        $this->name = $category->name;
+    }
 
     public function getName()
     {

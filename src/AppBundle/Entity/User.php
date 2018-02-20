@@ -22,12 +22,17 @@ class User implements UserInterface
 	 * @ORM\Id
 	 * @ORM\GeneratedValue
 	 * @ORM\Column(type="integer")
+	 *
+	 * @JMS\Expose
+	 * @JMS\Groups({"user"})
 	 */
 	private $id;
 
 	/**
 	 * @ORM\Column
+	 * @Assert\NotBlank
 	 *
+	 * @JMS\Groups({"user", "show"})
 	 * @JMS\Expose
 	 */
 	private $fullname;
@@ -46,6 +51,10 @@ class User implements UserInterface
 
 	/**
 	 * @ORM\Column(type="json_array")
+	 * @Assert\NotBlank
+	 * @JMS\Expose
+	 * @JMS\Type("string")
+	 * @JMS\Groups({"user_create"})
 	 */
 	private $roles;
 
@@ -63,6 +72,9 @@ class User implements UserInterface
 
 	/**
 	 * @ORM\Column
+	 * @JMS\Groups({"user_create"})
+	 * @JMS\Expose
+	 * @Assert\NotBlank
 	 */
 	private $password;
 
@@ -86,6 +98,9 @@ class User implements UserInterface
 	/**
 	 * @ORM\Column
 	 * @Assert\Email()
+	 *
+	 * @JMS\Groups({"user"})
+	 * @JMS\Expose
 	 */
 	private $email;
 
