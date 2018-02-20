@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 
 /**
- * @Route("/api", schemes={"http", "https"})
+ * @Route("/apirzalf", schemes={"http", "https"})
  * @Method({"GET"})
  */
 class DefaultController extends Controller
