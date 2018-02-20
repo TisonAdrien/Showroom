@@ -560,6 +560,7 @@
     <service id="AppBundle\ShowFinder\OMDBShowFinder" class="AppBundle\ShowFinder\OMDBShowFinder" public="false" autowire="true" autoconfigure="true">
       <tag name="show.finder"/>
       <argument type="service" id="csa_guzzle.client.OMDB_api"/>
+      <argument type="service" id="security.token_storage"/>
       <argument>8345559e</argument>
     </service>
     <service id="AppBundle\ShowFinder\ShowFinder" class="AppBundle\ShowFinder\ShowFinder" public="false" autowire="true" autoconfigure="true">
@@ -2198,7 +2199,15 @@
       <argument type="service" id="security.authentication.retry_entry_point"/>
       <argument type="service" id="monolog.logger.security" on-invalid="null"/>
     </service>
-    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false"/>
+    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false">
+      <call method="add">
+        <argument type="service" id="security.request_matcher.qhd9eoc"/>
+        <argument type="collection">
+          <argument>ROLE_ADMIN</argument>
+        </argument>
+        <argument>null</argument>
+      </call>
+    </service>
     <service id="security.context_listener" class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
       <tag name="monolog.logger" channel="security"/>
       <argument type="service" id="security.token_storage"/>
@@ -2805,6 +2814,9 @@
         <argument key="security.firewall.map.context.main" type="service" id="security.firewall.map.context.main"/>
         <argument key="security.firewall.map.context.secured_area" type="service" id="security.firewall.map.context.secured_area"/>
       </argument>
+    </service>
+    <service id="security.request_matcher.qhd9eoc" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/user</argument>
     </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand" public="false">
       <tag name="console.command" command="security:encode-password"/>

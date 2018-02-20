@@ -99,7 +99,7 @@ class Show
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getAuthor()
     {
@@ -107,9 +107,9 @@ class Show
     }
 
     /**
-     * @param mixed $author
+     * @param User $author
      */
-    public function setAuthor($author)
+    public function setAuthor(User $author)
     {
         $this->author = $author;
 
@@ -176,7 +176,8 @@ class Show
      */
     private $country;
     /**
-     * @ORM\Column
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="shows")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
      */
     private $author;

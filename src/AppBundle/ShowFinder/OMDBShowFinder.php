@@ -4,6 +4,7 @@ namespace AppBundle\ShowFinder;
 use GuzzleHttp\Client;
 use AppBundle\Entity\Show;
 use AppBundle\Entity\Category;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class OMDBShowFinder implements ShowFinderInterface
 {
@@ -11,10 +12,13 @@ class OMDBShowFinder implements ShowFinderInterface
 
 	private $client;
 
-	public function __construct(Client $client, $apiKey)
+	private $tokenStorage;
+
+	public function __construct(Client $client, TokenStorage $tokenStorage, $apiKey)
 	{
 		$this->client = $client;
 		$this->apiKey = $apiKey;
+		$this->tokenStorage = $tokenStorage;
 	}
 
 	/**
@@ -52,7 +56,7 @@ class OMDBShowFinder implements ShowFinderInterface
 			->setReleaseDate( ($json['Released'] == 'N/A' ? new \DateTime() : new \DateTime($json['Released'])) )
 			->setMainPicture( ($json['Poster'] == 'N/A' ? 'http://i0.kym-cdn.com/photos/images/original/001/329/453/ba0.jpg' : $json['Poster'] ) )
 			->setCategory($category)
-			->setAuthor('On fait ça parce que on doit faire ça...');
+			->setAuthor($this->tokenStorage->getToken()->getUser());
 		$shows[] = $show;
 		return $shows;
 	}

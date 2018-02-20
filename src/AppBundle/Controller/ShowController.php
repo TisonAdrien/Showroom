@@ -62,6 +62,7 @@ class ShowController extends Controller
         $form = $this->createForm(ShowType::class,$show);
         $form->handleRequest($request);
         if($form->isValid() && $form->isSubmitted()){
+            $show->setAuthor($this->getUser());
             //Upload file
             $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
             $show->setMainPicture($generatedFileName);

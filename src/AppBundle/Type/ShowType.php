@@ -33,7 +33,6 @@ class ShowType extends AbstractType
             ))
             ->add('abstract', TextareaType::class)
             ->add('country',CountryType::class, array('preferred_choices' => 'FR'))
-            ->add('author')
             ->add('releaseDate', DateType::class, array(
                 'years' => range($year -10,$year +2)
             ))

@@ -3,9 +3,11 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity
@@ -41,7 +43,7 @@ class User implements UserInterface
 
 	public function getRoles()
 	{
-		return ['ROLE_USER'];
+		return ['ROLE_ADMIN', 'ROLE_USER'];
 	}
 
 
@@ -89,5 +91,30 @@ class User implements UserInterface
 		// Nothing to do
 	}	
 
+	/**
+	 * @ORM\OneToMany(targetEntity="Show", mappedBy="author")
+	 */
+	private $shows;
 
+	public function getShows()
+	{
+		return $this->shows;
+	}
+
+	public function addShow($show)
+	{
+		if(!$this->shows->contains($show))
+			$this->shows->add($show);
+	}
+
+	public function removeShow($show)
+	{
+		if($this->shows->contains($show))
+			$this->shows->remove($show);
+	}
+
+	public function __construct()
+	{
+		$this->shows = new ArrayCollection();
+	}
 }

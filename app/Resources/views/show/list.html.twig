@@ -11,9 +11,9 @@
 
     {% for index, show in shows %}
         {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
-            {% set img = asset('upload/' ~ show.getMainPicture) %}
+            {% set img = asset('upload/' ~ show.getMainPicture()) %}
         {% else %}
-            {% set img = show.getMainPicture %}
+            {% set img = show.getMainPicture() %}
         {% endif %}
         <div class="card mb-4">
             <img class="card-img-top" src="{{ img }}" alt="Card image cap">
@@ -22,7 +22,7 @@
                 <p class="card-text">{{ show.getAbstract() }}</p>
             </div>
             <div class="card-footer text-muted">
-                Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor() }}
+                Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor().getFullname() }}
                 {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
                     <form action="{{ path('show_delete') }}" method="POST">
                         <input type="hidden" name="show_id" value="{{ show.getId() }}">
