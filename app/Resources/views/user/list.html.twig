@@ -12,15 +12,23 @@
                 <th scope="col">Fullname</th>
                 <th scope="col">Email</th>
                 <th scope="col">Roles</th>
+                <th scope="col">Shows</th>
             </tr>
         </thead>
         <tbody>
             {% for user in users %}
                 <tr>
-                    <th scope="row">1</th>
-                    <th>{{ user.getFullname() }}</th>
-                    <th>{{ user.getUsername() }}</th>
-                    <th>{{ user.getRoles() | join(",") }}</th>
+                    <td scope="row">1</td>
+                    <td>{{ user.getFullname() }}</td>
+                    <td>{{ user.getUsername() }}</td>
+                    <td>{{ user.getRoles() | join(",") }}</td>
+                    <td>
+                        {% for show in user.getShows() %}
+                            {{ show.getName() }}{% if not loop.last %}, {% endif %}
+                        {% else %}
+                            No shows yet !
+                        {% endfor %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

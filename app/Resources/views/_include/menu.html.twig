@@ -19,10 +19,10 @@
                     <li class="nav-item {% if app.request.attributes.get('_route') == "category_add" %}active{% endif %}">
                         <a class="nav-link" href="{{ path('category_add') }}">Create category</a>
                     </li>
-                    <li class="nav-item {% if app.request.attributes.get('_route') == "user_create" %}active{% endif %}">
-                        <a class="nav-link" href="{{ path('user_create') }}">Create user</a>
-                    </li>
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_ADMIN', app.user) %}
+                        <li class="nav-item {% if app.request.attributes.get('_route') == "user_create" %}active{% endif %}">
+                            <a class="nav-link" href="{{ path('user_create') }}">Create user</a>
+                        </li>
                         <li class="nav-item {% if app.request.attributes.get('_route') == "user_list" %}active{% endif %}">
                             <a class="nav-link" href="{{ path('user_list') }}">User list</a>
                         </li>

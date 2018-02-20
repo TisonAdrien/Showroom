@@ -83,6 +83,7 @@ class ShowController extends Controller
      */
     public function updateAction(Show $show, Request $request, FileUploader $fileUploader)
     {
+        $this->denyAccessUnlessGranted($show);
         $showForm = $this->createForm(ShowType::class, $show, array('validation_groups' => array('update')));
         $showForm->handleRequest($request);
         if($showForm->isValid() && $showForm->isSubmitted()){
@@ -126,6 +127,7 @@ class ShowController extends Controller
         $show = $this->getDoctrine()->getRepository('AppBundle:Show')->findOneBy(['id' => $showId]);
         if(!$show)
             throw new NotFoundHttpException('There is no show with the id %d', $showId);
+        $this->denyAccessUnlessGranted($show);
         $csrfToken = new CsrfToken('delete_show', $request->request->get('_csrf_token'));
         if($csrfTokenManager->isTokenValid($csrfToken)){
             $picture_dir = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture();

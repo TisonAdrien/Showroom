@@ -553,6 +553,12 @@
       <argument>C:\wamp64\www\Showroom</argument>
       <argument>/upload</argument>
     </service>
+    <service id="AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" autoconfigure="true">
+      <tag name="security.voter"/>
+    </service>
+    <service id="AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" autoconfigure="true">
+      <tag name="security.voter"/>
+    </service>
     <service id="AppBundle\ShowFinder\DBShowFinder" class="AppBundle\ShowFinder\DBShowFinder" public="false" autowire="true" autoconfigure="true">
       <tag name="show.finder"/>
       <argument type="service" id="doctrine"/>
@@ -2199,15 +2205,7 @@
       <argument type="service" id="security.authentication.retry_entry_point"/>
       <argument type="service" id="monolog.logger.security" on-invalid="null"/>
     </service>
-    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false">
-      <call method="add">
-        <argument type="service" id="security.request_matcher.qhd9eoc"/>
-        <argument type="collection">
-          <argument>ROLE_ADMIN</argument>
-        </argument>
-        <argument>null</argument>
-      </call>
-    </service>
+    <service id="security.access_map" class="Symfony\Component\Security\Http\AccessMap" public="false"/>
     <service id="security.context_listener" class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
       <tag name="monolog.logger" channel="security"/>
       <argument type="service" id="security.token_storage"/>
@@ -2814,9 +2812,6 @@
         <argument key="security.firewall.map.context.main" type="service" id="security.firewall.map.context.main"/>
         <argument key="security.firewall.map.context.secured_area" type="service" id="security.firewall.map.context.secured_area"/>
       </argument>
-    </service>
-    <service id="security.request_matcher.qhd9eoc" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/user</argument>
     </service>
     <service id="security.command.user_password_encoder" class="Symfony\Bundle\SecurityBundle\Command\UserPasswordEncoderCommand" public="false">
       <tag name="console.command" command="security:encode-password"/>
@@ -3982,6 +3977,10 @@
     <service id="abstract.instanceof.AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\UserController" class="AppBundle\Controller\UserController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\UserController" class="AppBundle\Controller\UserController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\Security\Core\Authorization\Voter\VoterInterface.0.AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\Security\Core\Authorization\Voter\VoterInterface.0.AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" abstract="true"/>
@@ -4311,6 +4310,8 @@
         <argument type="service" id="security.access.authenticated_voter"/>
         <argument type="service" id="security.access.simple_role_voter"/>
         <argument type="service" id="security.access.expression_voter"/>
+        <argument type="service" id="AppBundle\Security\Authorization\ShowVoter"/>
+        <argument type="service" id="AppBundle\Security\Authorization\UserVoter"/>
       </argument>
       <argument>affirmative</argument>
       <argument>false</argument>

@@ -39,11 +39,21 @@ class User implements UserInterface
 		return $this;
 	}
 
+
+	/**
+	 * @ORM\Column(type="json_array")
+	 */
 	private $roles;
 
 	public function getRoles()
 	{
-		return ['ROLE_ADMIN', 'ROLE_USER'];
+		return $this->roles;
+	}
+
+	public function setRoles($roles)
+	{
+		$this->roles = $roles;
+		return $this;
 	}
 
 

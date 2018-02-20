@@ -170,22 +170,26 @@ class Show
      * @Assert\NotBlank(groups={"create","update"})
      */
     private $abstract;
+
     /**
      * @ORM\Column
      * @Assert\NotBlank(groups={"create","update"})
      */
     private $country;
+
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="shows")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
      */
     private $author;
+
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank(groups={"create","update"})
      */
     private $releaseDate;
+    
     /**
      * @ORM\Column
      * @Assert\Image(minHeight=300, minWidth=750, groups={"create"})
