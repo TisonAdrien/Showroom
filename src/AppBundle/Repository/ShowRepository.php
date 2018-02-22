@@ -2,8 +2,8 @@
 
 namespace AppBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use AppBundle\Entity\Show;
+use Doctrine\ORM\EntityRepository;
 
 class ShowRepository extends EntityRepository
 {
