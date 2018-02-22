@@ -68,11 +68,16 @@ class UserController extends Controller
      * @Method({"PUT"})
      * @Route("/users/{id}", name="api_category_update")
      */
-    public function updateAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function updateAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EncoderFactoryInterface $encoderFactory)
     {
-        $data = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $serializationContext = DeserializationContext::create();
+        $data = $serializer->deserialize($request->getContent(), User::class, 'json', $serializationContext->setGroups(['show','user_create']));
         $error = $validator->validate($data);
         if($error->count() == 0){
+            $encoder = $encoderFactory->getEncoder($data);
+            $password = $encoder->encodePassword($data->getPassword(), null);
+            $data->setPassword($password);
+            $data->setRoles(explode(', ', $data->getRoles()));
             $user->update($data);
             $this->getDoctrine()->getManager()->flush();
             return new Response('User updated', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);

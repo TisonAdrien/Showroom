@@ -74,6 +74,13 @@ class User implements UserInterface
 		$this->shows = new ArrayCollection();
 	}
 
+	public function update(User $user)
+	{
+		$this->fullname = $user->fullname;
+		$this->roles = $user->roles;
+		$this->password = $user->password;
+	}
+
 	public function eraseCredentials()
 	{
 		// Nothing to do
