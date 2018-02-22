@@ -1,10 +1,10 @@
 <?php
 namespace AppBundle\DependencyInjection;
 
+use AppBundle\ShowFinder\ShowFinder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use AppBundle\ShowFinder\ShowFinder;
 
 class ShowFinderCompilerPass implements CompilerPassInterface
 {
