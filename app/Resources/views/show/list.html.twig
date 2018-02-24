@@ -10,8 +10,12 @@
     <!-- Blog Post -->
 
     {% for index, show in shows %}
-        {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
-            {% set img = asset('upload/' ~ show.getMainPicture()) %}
+        {% if show.getDataSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
+            {% if show.getMainPicture() == 'NO_PICTURE' %}
+                {% set img = "https://www.power965radio.com/wp-content/uploads/2014/10/default-img.gif" %}
+            {% else %}
+                {% set img = asset('upload/' ~ show.getMainPicture()) %}
+            {% endif %}
         {% else %}
             {% set img = show.getMainPicture() %}
         {% endif %}
@@ -23,7 +27,7 @@
             </div>
             <div class="card-footer text-muted">
                 Posted on {{ show.getReleaseDate().format("d/m/Y") }} by {{ show.getAuthor().getFullname() }}
-                {% if show.getDateSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
+                {% if show.getDataSource() == constant('AppBundle\\Entity\\Show::DATA_SOURCE_DB') %}
                     {% if is_granted('NOT USED', show) %}
                         <form action="{{ path('show_delete') }}" method="POST">
                             <input type="hidden" name="show_id" value="{{ show.getId() }}">

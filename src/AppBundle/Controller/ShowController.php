@@ -90,7 +90,9 @@ class ShowController extends Controller
             //Upload file if it's sent
             if($show->getTmpPicture() != null){
                 //Delete old file
-                unlink($this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture());
+                $filename = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture();
+                if(file_exists($filename))
+                    unlink($filename);
                 //Upload new file
                 $generatedFileName = $fileUploader->upload($show->getTmpPicture(),$show->getCategory()->getName());
                 $show->setMainPicture($generatedFileName);
@@ -130,9 +132,9 @@ class ShowController extends Controller
         $this->denyAccessUnlessGranted('osef',$show);
         $csrfToken = new CsrfToken('delete_show', $request->request->get('_csrf_token'));
         if($csrfTokenManager->isTokenValid($csrfToken)){
-            $picture_dir = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture();
-            if(count(glob($picture_dir)) > 0)
-                unlink($picture_dir);
+            $filename = $this->getParameter('kernel.project_dir').'/web'.$this->getParameter('upload_directory_file').'/'.$show->getMainPicture();
+            if(file_exists($filename))
+                unlink($filename);
             $em = $this->getDoctrine()->getManager();
             $em->remove($show);
             $em->flush();

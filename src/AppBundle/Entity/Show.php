@@ -32,7 +32,7 @@ class Show
      * @ORM\JoinColumn(name="category_id",referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $category;
 
@@ -40,7 +40,7 @@ class Show
      * @ORM\Column
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $name;
 
@@ -48,7 +48,7 @@ class Show
      * @ORM\Column(type="text")
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $abstract;
 
@@ -56,7 +56,7 @@ class Show
      * @ORM\Column
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $country;
 
@@ -65,7 +65,7 @@ class Show
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $author;
 
@@ -73,7 +73,7 @@ class Show
      * @ORM\Column(type="date")
      * @Assert\NotBlank(groups={"create","update"})
      *
-     * @JMS\Groups({"show"})
+     * @JMS\Groups({"show", "show_create"})
      */
     private $releaseDate;
     
@@ -81,7 +81,7 @@ class Show
      * @ORM\Column
      * @Assert\Image(minHeight=300, minWidth=750, groups={"create"})
      *
-     * @JMS\Exclude
+     * @JMS\Groups({"show_create"})
      */
     private $mainPicture;
 
@@ -94,6 +94,16 @@ class Show
      */
     private $dataSource;
 
+
+    public function update(Show $show)
+    {
+        $this->setName($show->getName());
+        $this->setCategory($show->getCategory());
+        $this->setAbstract($show->getAbstract());
+        $this->setCountry($show->getCountry());
+        $this->setAuthor($show->getAuthor());
+        $this->setReleaseDate($show->getReleaseDate());
+    }
     
 
     public function getId()
@@ -169,7 +179,7 @@ class Show
         return $this->tmpPicture;
     }
     
-    public function getDateSource()
+    public function getDataSource()
     {
         return $this->dataSource;
     }

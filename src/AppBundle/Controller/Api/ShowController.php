@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
@@ -38,6 +37,60 @@ class ShowController extends Controller
         $serializationContext = SerializationContext::create();
         $data = $serializer->serialize($show, 'json', $serializationContext->setGroups(['show']));
         return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application\json']);
+    }
+
+
+    /**
+     * @Method({"POST"})
+     * @Route("/shows", name="api_show_create")
+     */
+    public function createAction(Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    {
+        $serializationContext = DeserializationContext::create();
+        $data_serialized = json_decode($request->getContent());
+        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneBy(array('id' => $data_serialized->category));
+        $author = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id' => $data_serialized->author));
+        $data = $serializer->deserialize($request->getContent(), Show::class, 'json', $serializationContext->setGroups(['show_create']));
+        $data
+            ->setAuthor($author)
+            ->setCategory($category)
+            ->setDataSource(Show::DATA_SOURCE_DB)
+            ->setMainPicture('NO_PICTURE')
+        ;
+        $error = $validator->validate($data);
+        if($error->count() == 0){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($data);
+            $em->flush();
+            return new Response('Show created', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);
+        }else{
+            return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
+        }
+    }
+
+    /**
+     * @Method({"PUT"})
+     * @Route("/shows/{id}", name="api_show_update")
+     */
+    public function updateAction(Show $show, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    {
+        $serializationContext = DeserializationContext::create();
+        $data_serialized = json_decode($request->getContent());
+        $category = $this->getDoctrine()->getRepository('AppBundle:Category')->findOneBy(array('id' => $data_serialized->category));
+        $author = $this->getDoctrine()->getRepository('AppBundle:User')->findOneBy(array('id' => $data_serialized->author));
+        $data = $serializer->deserialize($request->getContent(), Show::class, 'json', $serializationContext->setGroups(['show_create']));
+        $data
+            ->setAuthor($author)
+            ->setCategory($category)
+        ;
+        $error = $validator->validate($data);
+        if($error->count() == 0){
+            $show->update($data);
+            $this->getDoctrine()->getManager()->flush();
+            return new Response('Show updated', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);
+        }else{
+            return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
+        }
     }
 
 
