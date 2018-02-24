@@ -85,4 +85,21 @@ class UserController extends Controller
             return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
         }
     }
+
+
+    /**
+     * @Method({"DELETE"})
+     * @Route("/users/{id}", name="api_user_delete")
+     */
+    public function deleteAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    {
+        if(!is_null($user)){
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+            return new Response('User deleted', Response::HTTP_OK, ['Content-Type' => 'application\json']);
+        }else{
+            return new Response('User not found', Response::HTTP_NOT_FOUND, ['Content-Type' => 'application\json']);
+        }
+    }
 }
