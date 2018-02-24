@@ -672,7 +672,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.ornm6sx"/>
+      <argument type="service" id="service_locator.zjnezsr"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -5024,10 +5024,11 @@
         <argument key="encoderFactory" type="service" id="security.encoder_factory.generic" on-invalid="ignore"/>
       </argument>
     </service>
-    <service id="service_locator.ornm6sx" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.zjnezsr" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Controller\Api\CategoryController:createAction" type="service" id="service_locator.cisbsuh"/>
+        <argument key="AppBundle\Controller\Api\CategoryController:deleteAction" type="service" id="service_locator.ultdm6o"/>
         <argument key="AppBundle\Controller\Api\CategoryController:listAction" type="service" id="service_locator.trifszv"/>
         <argument key="AppBundle\Controller\Api\CategoryController:unitAction" type="service" id="service_locator.jprrsqv"/>
         <argument key="AppBundle\Controller\Api\CategoryController:updateAction" type="service" id="service_locator.ultdm6o"/>
@@ -5044,6 +5045,7 @@
         <argument key="AppBundle\Controller\ShowController:updateAction" type="service" id="service_locator.eo0.ybr"/>
         <argument key="AppBundle\Controller\UserController:createAction" type="service" id="service_locator.nefkswg"/>
         <argument key="AppBundle\Controller\Api\CategoryController::createAction" type="service" id="service_locator.cisbsuh"/>
+        <argument key="AppBundle\Controller\Api\CategoryController::deleteAction" type="service" id="service_locator.ultdm6o"/>
         <argument key="AppBundle\Controller\Api\CategoryController::listAction" type="service" id="service_locator.trifszv"/>
         <argument key="AppBundle\Controller\Api\CategoryController::unitAction" type="service" id="service_locator.jprrsqv"/>
         <argument key="AppBundle\Controller\Api\CategoryController::updateAction" type="service" id="service_locator.ultdm6o"/>
