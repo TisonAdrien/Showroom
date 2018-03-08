@@ -672,7 +672,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.qplygcx"/>
+      <argument type="service" id="service_locator.tbtzv7l"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -5045,7 +5045,7 @@
         <argument key="encoderFactory" type="service" id="security.encoder_factory.generic" on-invalid="ignore"/>
       </argument>
     </service>
-    <service id="service_locator.qplygcx" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.tbtzv7l" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Controller\Api\CategoryController:createAction" type="service" id="service_locator.cisbsuh"/>
@@ -5056,6 +5056,7 @@
         <argument key="AppBundle\Controller\Api\ShowController:createAction" type="service" id="service_locator.wuys75t"/>
         <argument key="AppBundle\Controller\Api\ShowController:deleteAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\ShowController:listAction" type="service" id="service_locator.5ynhqs8"/>
+        <argument key="AppBundle\Controller\Api\ShowController:listActionByName" type="service" id="service_locator.5ynhqs8"/>
         <argument key="AppBundle\Controller\Api\ShowController:unitAction" type="service" id="service_locator.1lk8tx9"/>
         <argument key="AppBundle\Controller\Api\ShowController:updateAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\UserController:createAction" type="service" id="service_locator.uf3n3fu"/>
@@ -5077,6 +5078,7 @@
         <argument key="AppBundle\Controller\Api\ShowController::createAction" type="service" id="service_locator.wuys75t"/>
         <argument key="AppBundle\Controller\Api\ShowController::deleteAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\ShowController::listAction" type="service" id="service_locator.5ynhqs8"/>
+        <argument key="AppBundle\Controller\Api\ShowController::listActionByName" type="service" id="service_locator.5ynhqs8"/>
         <argument key="AppBundle\Controller\Api\ShowController::unitAction" type="service" id="service_locator.1lk8tx9"/>
         <argument key="AppBundle\Controller\Api\ShowController::updateAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\UserController::createAction" type="service" id="service_locator.uf3n3fu"/>

@@ -30,6 +30,21 @@ class ShowController extends Controller
 
     /**
      * @Method({"GET"})
+     * @Route("/shows/name/{name}", name="api_show_byname")
+     */
+    public function listActionByName(SerializerInterface $serializer, String $name)
+    {
+        $shows = $this->getDoctrine()->getRepository('AppBundle:Show')->findAllWithName($name);
+        $serializationContext = SerializationContext::create();
+        $data = $serializer->serialize($shows, 'json', $serializationContext->setGroups(['show']));
+        if($data == "[]")
+            return new Response('No show found for name "'.$name.'" :(', Response::HTTP_NOT_FOUND, ['Content-Type' => 'application\json']);
+        else
+            return new Response($data, Response::HTTP_OK, ['Content-Type' => 'application\json']);
+    }
+
+    /**
+     * @Method({"GET"})
      * @Route("/shows/{id}", name="api_show_unit")
      */
     public function unitAction(SerializerInterface $serializer, Show $show)
