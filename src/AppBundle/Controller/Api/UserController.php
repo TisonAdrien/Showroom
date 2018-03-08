@@ -68,16 +68,38 @@ class UserController extends Controller
      * @Method({"PUT"})
      * @Route("/users/{id}", name="api_category_update")
      */
-    public function updateAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function updateAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EncoderFactoryInterface $encoderFactory)
     {
-        $data = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $serializationContext = DeserializationContext::create();
+        $data = $serializer->deserialize($request->getContent(), User::class, 'json', $serializationContext->setGroups(['show','user_create']));
         $error = $validator->validate($data);
         if($error->count() == 0){
+            $encoder = $encoderFactory->getEncoder($data);
+            $password = $encoder->encodePassword($data->getPassword(), null);
+            $data->setPassword($password);
+            $data->setRoles(explode(', ', $data->getRoles()));
             $user->update($data);
             $this->getDoctrine()->getManager()->flush();
             return new Response('User updated', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);
         }else{
             return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
+        }
+    }
+
+
+    /**
+     * @Method({"DELETE"})
+     * @Route("/users/{id}", name="api_user_delete")
+     */
+    public function deleteAction(User $user, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    {
+        if(!is_null($user)){
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+            return new Response('User deleted', Response::HTTP_OK, ['Content-Type' => 'application\json']);
+        }else{
+            return new Response('User not found', Response::HTTP_NOT_FOUND, ['Content-Type' => 'application\json']);
         }
     }
 }

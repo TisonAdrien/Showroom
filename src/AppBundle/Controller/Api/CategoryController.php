@@ -65,9 +65,26 @@ class CategoryController extends Controller
         if($error->count() == 0){
             $category->update($data);
             $this->getDoctrine()->getManager()->flush();
-            return new Response('Category updated', Response::HTTP_CREATED, ['Content-Type' => 'application\json']);
+            return new Response('Category updated', Response::HTTP_OK, ['Content-Type' => 'application\json']);
         }else{
             return new Response($serializer->serialize($error, 'json'), Response::HTTP_BAD_REQUEST, ['Content-Type' => 'application\json']);
+        }
+    }
+
+
+    /**
+     * @Method({"DELETE"})
+     * @Route("/categories/{id}", name="api_category_delete")
+     */
+    public function deleteAction(Category $category, Request $request, SerializerInterface $serializer, ValidatorInterface $validator)
+    {
+        if(!is_null($category)){
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($category);
+            $em->flush();
+            return new Response('Category deleted', Response::HTTP_OK, ['Content-Type' => 'application\json']);
+        }else{
+            return new Response('Category not found', Response::HTTP_NOT_FOUND, ['Content-Type' => 'application\json']);
         }
     }
 }
