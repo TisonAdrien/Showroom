@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Swagger\Annotations as SWG;
 
 
 class ShowController extends Controller
@@ -19,6 +20,12 @@ class ShowController extends Controller
     /**
      * @Method({"GET"})
      * @Route("/shows", name="api_show_list")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the list of shows"
+     * )
+     * @SWG\Tag(name="shows")
      */
     public function listAction(SerializerInterface $serializer)
     {
@@ -31,6 +38,18 @@ class ShowController extends Controller
     /**
      * @Method({"GET"})
      * @Route("/shows/name/{name}", name="api_show_byname")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the show with name like {name}"
+     * )
+     * @SWG\Parameter(
+     *     name="name",
+     *     in="path",
+     *     type="string",
+     *     description="The field used to search by name"
+     * )
+     * @SWG\Tag(name="shows")
      */
     public function listActionByName(SerializerInterface $serializer, String $name)
     {
@@ -46,6 +65,18 @@ class ShowController extends Controller
     /**
      * @Method({"GET"})
      * @Route("/shows/{id}", name="api_show_unit")
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Returns the show with id {id}"
+     * )
+     * @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     type="integer",
+     *     description="The field used to search by id"
+     * )
+     * @SWG\Tag(name="shows")
      */
     public function unitAction(SerializerInterface $serializer, Show $show)
     {

@@ -489,6 +489,7 @@
       </parameter>
     </parameter>
     <parameter key="console.command.ids" type="collection">
+      <parameter key="console.command.appbundle_command_usercommand">AppBundle\Command\UserCommand</parameter>
       <parameter key="console.command.symfony_bundle_frameworkbundle_command_aboutcommand">console.command.about</parameter>
       <parameter key="console.command.symfony_bundle_frameworkbundle_command_assetsinstallcommand">console.command.assets_install</parameter>
       <parameter key="console.command.symfony_bundle_frameworkbundle_command_cacheclearcommand">console.command.cache_clear</parameter>
@@ -547,6 +548,7 @@
       <parameter key="console.command.symfony_bundle_webserverbundle_command_serverlogcommand">web_server.command.server_log</parameter>
     </parameter>
     <parameter key="console.lazy_command.ids" type="collection">
+      <parameter key="AppBundle\Command\UserCommand">true</parameter>
       <parameter key="console.command.about">true</parameter>
       <parameter key="console.command.assets_install">true</parameter>
       <parameter key="console.command.cache_clear">true</parameter>
@@ -597,7 +599,16 @@
   <services>
     <service id="service_container" class="Symfony\Component\DependencyInjection\ContainerInterface" public="true" synthetic="true"/>
     <service id="AppBundle\AppBundle" class="AppBundle\AppBundle" public="false" autowire="true" autoconfigure="true"/>
+    <service id="AppBundle\Command\UserCommand" class="AppBundle\Command\UserCommand" public="false" autowire="true" autoconfigure="true">
+      <tag name="console.command"/>
+      <call method="setName">
+        <argument>app:create-user</argument>
+      </call>
+    </service>
     <service id="AppBundle\Controller\Api\CategoryController" class="AppBundle\Controller\Api\CategoryController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+    </service>
+    <service id="AppBundle\Controller\Api\MediaController" class="AppBundle\Controller\Api\MediaController" public="true" autowire="true" autoconfigure="true">
       <tag name="controller.service_arguments"/>
     </service>
     <service id="AppBundle\Controller\Api\ShowController" class="AppBundle\Controller\Api\ShowController" public="true" autowire="true" autoconfigure="true">
@@ -623,11 +634,22 @@
       <argument>C:\wamp64\www\Showroom</argument>
       <argument>/upload</argument>
     </service>
+    <service id="AppBundle\Listener\ApiExceptionListener" class="AppBundle\Listener\ApiExceptionListener" public="false" autowire="true" autoconfigure="true">
+      <tag name="kernel.event_subscriber"/>
+    </service>
+    <service id="AppBundle\Security\Authentication\ApiUserPasswordAuthenticator" class="AppBundle\Security\Authentication\ApiUserPasswordAuthenticator" public="false" autowire="true" autoconfigure="true">
+      <argument type="service" id="security.encoder_factory.generic"/>
+    </service>
     <service id="AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" autoconfigure="true">
       <tag name="security.voter"/>
     </service>
     <service id="AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" autoconfigure="true">
       <tag name="security.voter"/>
+    </service>
+    <service id="AppBundle\Serializer\Handler\ShowHandler" class="AppBundle\Serializer\Handler\ShowHandler" public="false" autowire="true" autoconfigure="true">
+      <tag name="jms_serializer.subscribing_handler"/>
+      <argument type="service" id="doctrine"/>
+      <argument type="service" id="security.token_storage"/>
     </service>
     <service id="AppBundle\ShowFinder\DBShowFinder" class="AppBundle\ShowFinder\DBShowFinder" public="false" autowire="true" autoconfigure="true">
       <tag name="show.finder"/>
@@ -648,6 +670,9 @@
       </call>
     </service>
     <service id="AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true">
+      <tag name="form.type"/>
+    </service>
+    <service id="AppBundle\Type\MediaType" class="AppBundle\Type\MediaType" public="false" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
     <service id="AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" autoconfigure="true">
@@ -672,7 +697,7 @@
     </service>
     <service id="argument_resolver.service" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-50"/>
-      <argument type="service" id="service_locator.tbtzv7l"/>
+      <argument type="service" id="service_locator.xvzevtk"/>
     </service>
     <service id="argument_resolver.default" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver" public="false">
       <tag name="controller.argument_value_resolver" priority="-100"/>
@@ -905,6 +930,7 @@
       </argument>
       <argument type="collection">
         <argument>AppBundle\Type\CategoryType</argument>
+        <argument>AppBundle\Type\MediaType</argument>
         <argument>AppBundle\Type\ShowType</argument>
         <argument>AppBundle\Type\UserType</argument>
         <argument>Symfony\Component\Form\Extension\Core\Type\FormType</argument>
@@ -1118,7 +1144,7 @@
       <argument type="service" id="form.resolved_type_factory"/>
     </service>
     <service id="form.extension" class="Symfony\Component\Form\Extension\DependencyInjection\DependencyInjectionExtension" public="false">
-      <argument type="service" id="service_locator.atydu1c"/>
+      <argument type="service" id="service_locator.otsnvhz"/>
       <argument type="collection">
         <argument key="Symfony\Component\Form\Extension\Core\Type\FormType" type="iterator">
           <argument type="service" id="form.type_extension.form.http_foundation"/>
@@ -1601,6 +1627,14 @@
         <argument>0</argument>
       </call>
       <call method="addListener">
+        <argument>kernel.exception</argument>
+        <argument type="collection">
+          <argument type="service" id="AppBundle\Listener\ApiExceptionListener"/>
+          <argument>processExceptionForApi</argument>
+        </argument>
+        <argument>0</argument>
+      </call>
+      <call method="addListener">
         <argument>kernel.response</argument>
         <argument type="collection">
           <argument type="service" id="response_listener"/>
@@ -1738,6 +1772,14 @@
       </call>
       <call method="addListener">
         <argument>kernel.request</argument>
+        <argument type="collection">
+          <argument type="service" id="debug.debug_handlers_listener"/>
+          <argument>configure</argument>
+        </argument>
+        <argument>2048</argument>
+      </call>
+      <call method="addListener">
+        <argument>console.command</argument>
         <argument type="collection">
           <argument type="service" id="debug.debug_handlers_listener"/>
           <argument>configure</argument>
@@ -2258,7 +2300,8 @@
     </service>
     <service id="security.authentication.manager" class="Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager" public="false">
       <argument type="iterator">
-        <argument type="service" id="security.authentication.provider.anonymous.api"/>
+        <argument type="service" id="security.authentication.provider.anonymous.api_doc"/>
+        <argument type="service" id="security.authentication.provider.guard.api"/>
         <argument type="service" id="security.authentication.provider.anonymous.login"/>
         <argument type="service" id="security.authentication.provider.dao.secured_area"/>
         <argument type="service" id="security.authentication.provider.anonymous.main"/>
@@ -2316,9 +2359,10 @@
       <argument type="service" id="security.role_hierarchy" on-invalid="null"/>
     </service>
     <service id="security.firewall.map" class="Symfony\Bundle\SecurityBundle\Security\FirewallMap" public="false">
-      <argument type="service" id="service_locator...fcsm9"/>
+      <argument type="service" id="service_locator.c3vn1.n"/>
       <argument type="iterator">
         <argument key="security.firewall.map.context.dev" type="service" id="security.request_matcher.zfhj2lw"/>
+        <argument key="security.firewall.map.context.api_doc" type="service" id="security.request_matcher.n9yfall"/>
         <argument key="security.firewall.map.context.api" type="service" id="security.request_matcher.x1icpav"/>
         <argument key="security.firewall.map.context.login" type="service" id="security.request_matcher.46ajhtx"/>
         <argument key="security.firewall.map.context.secured_area" type="service" id="security.request_matcher.00qf1z7"/>
@@ -2738,14 +2782,14 @@
       <argument>null</argument>
       <argument type="service" id="security.firewall.map.config.dev"/>
     </service>
-    <service id="security.firewall.map.config.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
-      <argument>api</argument>
+    <service id="security.firewall.map.config.api_doc" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
+      <argument>api_doc</argument>
       <argument>security.user_checker</argument>
-      <argument>security.request_matcher.x1icpav</argument>
+      <argument>security.request_matcher.n9yfall</argument>
       <argument>true</argument>
       <argument>false</argument>
       <argument>null</argument>
-      <argument>api</argument>
+      <argument>api_doc</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument>null</argument>
@@ -2754,8 +2798,8 @@
       </argument>
       <argument>null</argument>
     </service>
-    <service id="security.request_matcher.x1icpav" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
-      <argument>^/api</argument>
+    <service id="security.request_matcher.n9yfall" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api/doc$</argument>
     </service>
     <service id="security.context_listener.0" class="Symfony\Component\Security\Http\Firewall\ContextListener" public="false">
       <argument type="service" id="security.token_storage"/>
@@ -2763,7 +2807,7 @@
         <argument type="service" id="security.user.provider.concrete.in_memory"/>
         <argument type="service" id="security.user.provider.concrete.database"/>
       </argument>
-      <argument>api</argument>
+      <argument>api_doc</argument>
       <argument type="service" id="monolog.logger.security" on-invalid="null"/>
       <argument type="service" id="debug.event_dispatcher" on-invalid="null"/>
       <argument type="service" id="security.authentication.trust_resolver"/>
@@ -2771,31 +2815,88 @@
         <argument>false</argument>
       </call>
     </service>
-    <service id="security.authentication.listener.anonymous.api" class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
+    <service id="security.authentication.listener.anonymous.api_doc" class="Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener" public="false">
       <argument type="service" id="security.token_storage"/>
       <argument>%container.build_hash%</argument>
       <argument type="service" id="monolog.logger.security" on-invalid="null"/>
       <argument type="service" id="security.authentication.manager"/>
     </service>
-    <service id="security.authentication.provider.anonymous.api" class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
+    <service id="security.authentication.provider.anonymous.api_doc" class="Symfony\Component\Security\Core\Authentication\Provider\AnonymousAuthenticationProvider" public="false">
       <argument>%container.build_hash%</argument>
     </service>
-    <service id="security.exception_listener.api" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
+    <service id="security.exception_listener.api_doc" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
       <argument type="service" id="security.token_storage"/>
       <argument type="service" id="security.authentication.trust_resolver"/>
       <argument type="service" id="security.http_utils"/>
-      <argument>api</argument>
+      <argument>api_doc</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument>null</argument>
       <argument type="service" id="monolog.logger.security" on-invalid="null"/>
       <argument>false</argument>
     </service>
-    <service id="security.firewall.map.context.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+    <service id="security.firewall.map.context.api_doc" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
       <argument type="iterator">
         <argument type="service" id="security.channel_listener"/>
         <argument type="service" id="security.context_listener.0"/>
-        <argument type="service" id="security.authentication.listener.anonymous.api"/>
+        <argument type="service" id="security.authentication.listener.anonymous.api_doc"/>
+        <argument type="service" id="security.access_listener"/>
+      </argument>
+      <argument type="service" id="security.exception_listener.api_doc"/>
+      <argument type="service" id="security.firewall.map.config.api_doc"/>
+    </service>
+    <service id="security.firewall.map.config.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallConfig" public="false">
+      <argument>api</argument>
+      <argument>security.user_checker</argument>
+      <argument>security.request_matcher.x1icpav</argument>
+      <argument>true</argument>
+      <argument>true</argument>
+      <argument>security.user.provider.concrete.database</argument>
+      <argument>null</argument>
+      <argument>AppBundle\Security\Authentication\ApiUserPasswordAuthenticator</argument>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="collection">
+        <argument>guard</argument>
+      </argument>
+      <argument>null</argument>
+    </service>
+    <service id="security.request_matcher.x1icpav" class="Symfony\Component\HttpFoundation\RequestMatcher" public="false">
+      <argument>^/api</argument>
+    </service>
+    <service id="security.authentication.provider.guard.api" class="Symfony\Component\Security\Guard\Provider\GuardAuthenticationProvider" public="false">
+      <argument type="iterator">
+        <argument type="service" id="AppBundle\Security\Authentication\ApiUserPasswordAuthenticator"/>
+      </argument>
+      <argument type="service" id="security.user.provider.concrete.database"/>
+      <argument>api</argument>
+      <argument type="service" id="security.user_checker"/>
+    </service>
+    <service id="security.authentication.listener.guard.api" class="Symfony\Component\Security\Guard\Firewall\GuardAuthenticationListener" public="false">
+      <tag name="security.remember_me_aware" id="api" provider="security.user.provider.concrete.database"/>
+      <argument type="service" id="security.authentication.guard_handler"/>
+      <argument type="service" id="security.authentication.manager"/>
+      <argument>api</argument>
+      <argument type="iterator">
+        <argument type="service" id="AppBundle\Security\Authentication\ApiUserPasswordAuthenticator"/>
+      </argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+    </service>
+    <service id="security.exception_listener.api" class="Symfony\Component\Security\Http\Firewall\ExceptionListener" public="false">
+      <argument type="service" id="security.token_storage"/>
+      <argument type="service" id="security.authentication.trust_resolver"/>
+      <argument type="service" id="security.http_utils"/>
+      <argument>api</argument>
+      <argument type="service" id="AppBundle\Security\Authentication\ApiUserPasswordAuthenticator"/>
+      <argument>null</argument>
+      <argument>null</argument>
+      <argument type="service" id="monolog.logger.security" on-invalid="null"/>
+      <argument>true</argument>
+    </service>
+    <service id="security.firewall.map.context.api" class="Symfony\Bundle\SecurityBundle\Security\FirewallContext">
+      <argument type="iterator">
+        <argument type="service" id="security.channel_listener"/>
+        <argument type="service" id="security.authentication.listener.guard.api"/>
         <argument type="service" id="security.access_listener"/>
       </argument>
       <argument type="service" id="security.exception_listener.api"/>
@@ -3063,10 +3164,11 @@
       <argument type="service" id="security.exception_listener.main"/>
       <argument type="service" id="security.firewall.map.config.main"/>
     </service>
-    <service id="service_locator...fcsm9" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.c3vn1.n" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="security.firewall.map.context.api" type="service" id="security.firewall.map.context.api"/>
+        <argument key="security.firewall.map.context.api_doc" type="service" id="security.firewall.map.context.api_doc"/>
         <argument key="security.firewall.map.context.dev" type="service" id="security.firewall.map.context.dev"/>
         <argument key="security.firewall.map.context.login" type="service" id="security.firewall.map.context.login"/>
         <argument key="security.firewall.map.context.main" type="service" id="security.firewall.map.context.main"/>
@@ -3235,6 +3337,10 @@
         <argument>!Security</argument>
       </call>
       <call method="addPath">
+        <argument>C:\wamp64\www\Showroom/templates/bundles/TwigBundle</argument>
+        <argument>Twig</argument>
+      </call>
+      <call method="addPath">
         <argument>C:\wamp64\www\Showroom\vendor\symfony\symfony\src\Symfony\Bundle\TwigBundle/Resources/views</argument>
         <argument>Twig</argument>
       </call>
@@ -3267,6 +3373,10 @@
         <argument>!CsaGuzzle</argument>
       </call>
       <call method="addPath">
+        <argument>C:\wamp64\www\Showroom/templates/bundles/NelmioApiDocBundle</argument>
+        <argument>NelmioApiDoc</argument>
+      </call>
+      <call method="addPath">
         <argument>C:\wamp64\www\Showroom\vendor\nelmio\api-doc-bundle/Resources/views</argument>
         <argument>NelmioApiDoc</argument>
       </call>
@@ -3292,6 +3402,9 @@
       </call>
       <call method="addPath">
         <argument>C:\wamp64\www\Showroom\app/Resources/views</argument>
+      </call>
+      <call method="addPath">
+        <argument>C:\wamp64\www\Showroom/templates</argument>
       </call>
       <call method="addPath">
         <argument>C:\wamp64\www\Showroom\vendor\symfony\symfony\src\Symfony\Bridge\Twig/Resources/views/Form</argument>
@@ -4156,9 +4269,15 @@
       <argument type="service" id="debug.stopwatch"/>
     </service>
     <service id="jms_serializer.handler_registry" class="JMS\Serializer\Handler\LazyHandlerRegistry">
-      <argument type="service" id="service_locator.lh2nfxp"/>
+      <argument type="service" id="service_locator.xgmy2f1"/>
       <argument type="collection">
         <argument key="2" type="collection">
+          <argument key="Appbundle\Entity\Show" type="collection">
+            <argument key="json" type="collection">
+              <argument>AppBundle\Serializer\Handler\ShowHandler</argument>
+              <argument>deserialize</argument>
+            </argument>
+          </argument>
           <argument key="DateTime" type="collection">
             <argument key="json" type="collection">
               <argument>jms_serializer.datetime_handler</argument>
@@ -4890,8 +5009,12 @@
         <argument>server:log</argument>
       </call>
     </service>
+    <service id="instanceof.Symfony\Component\Console\Command\Command.0.AppBundle\Command\UserCommand" class="AppBundle\Command\UserCommand" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Command\UserCommand" class="AppBundle\Command\UserCommand" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\Api\CategoryController" class="AppBundle\Controller\Api\CategoryController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\Api\CategoryController" class="AppBundle\Controller\Api\CategoryController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\Api\MediaController" class="AppBundle\Controller\Api\MediaController" public="true" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Controller\Api\MediaController" class="AppBundle\Controller\Api\MediaController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\Api\ShowController" class="AppBundle\Controller\Api\ShowController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\Api\ShowController" class="AppBundle\Controller\Api\ShowController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\Api\UserController" class="AppBundle\Controller\Api\UserController" public="true" autowire="true" abstract="true"/>
@@ -4904,12 +5027,16 @@
     <service id="abstract.instanceof.AppBundle\Controller\ShowController" class="AppBundle\Controller\ShowController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Bundle\FrameworkBundle\Controller\Controller.0.AppBundle\Controller\UserController" class="AppBundle\Controller\UserController" public="true" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Controller\UserController" class="AppBundle\Controller\UserController" public="true" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\EventDispatcher\EventSubscriberInterface.0.AppBundle\Listener\ApiExceptionListener" class="AppBundle\Listener\ApiExceptionListener" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Listener\ApiExceptionListener" class="AppBundle\Listener\ApiExceptionListener" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Security\Core\Authorization\Voter\VoterInterface.0.AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Security\Authorization\ShowVoter" class="AppBundle\Security\Authorization\ShowVoter" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Security\Core\Authorization\Voter\VoterInterface.0.AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Security\Authorization\UserVoter" class="AppBundle\Security\Authorization\UserVoter" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Type\CategoryType" class="AppBundle\Type\CategoryType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\MediaType" class="AppBundle\Type\MediaType" public="false" autowire="true" abstract="true"/>
+    <service id="abstract.instanceof.AppBundle\Type\MediaType" class="AppBundle\Type\MediaType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" abstract="true"/>
     <service id="abstract.instanceof.AppBundle\Type\ShowType" class="AppBundle\Type\ShowType" public="false" autowire="true" autoconfigure="true" abstract="true"/>
     <service id="instanceof.Symfony\Component\Form\FormTypeInterface.0.AppBundle\Type\UserType" class="AppBundle\Type\UserType" public="false" autowire="true" abstract="true"/>
@@ -4938,6 +5065,13 @@
       <argument type="collection">
         <argument key="serializer" type="service" id="jms_serializer.serializer" on-invalid="ignore"/>
         <argument key="validator" type="service" id="debug.validator" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id="service_locator.97l52l9" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="fileUploader" type="service" id="AppBundle\File\FileUploader" on-invalid="ignore"/>
+        <argument key="router" type="service" id="router.default" on-invalid="ignore"/>
       </argument>
     </service>
     <service id="service_locator.5ynhqs8" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
@@ -5045,7 +5179,7 @@
         <argument key="encoderFactory" type="service" id="security.encoder_factory.generic" on-invalid="ignore"/>
       </argument>
     </service>
-    <service id="service_locator.tbtzv7l" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.xvzevtk" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Controller\Api\CategoryController:createAction" type="service" id="service_locator.cisbsuh"/>
@@ -5053,6 +5187,7 @@
         <argument key="AppBundle\Controller\Api\CategoryController:listAction" type="service" id="service_locator.trifszv"/>
         <argument key="AppBundle\Controller\Api\CategoryController:unitAction" type="service" id="service_locator.jprrsqv"/>
         <argument key="AppBundle\Controller\Api\CategoryController:updateAction" type="service" id="service_locator.ultdm6o"/>
+        <argument key="AppBundle\Controller\Api\MediaController:uploadAction" type="service" id="service_locator.97l52l9"/>
         <argument key="AppBundle\Controller\Api\ShowController:createAction" type="service" id="service_locator.wuys75t"/>
         <argument key="AppBundle\Controller\Api\ShowController:deleteAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\ShowController:listAction" type="service" id="service_locator.5ynhqs8"/>
@@ -5075,6 +5210,7 @@
         <argument key="AppBundle\Controller\Api\CategoryController::listAction" type="service" id="service_locator.trifszv"/>
         <argument key="AppBundle\Controller\Api\CategoryController::unitAction" type="service" id="service_locator.jprrsqv"/>
         <argument key="AppBundle\Controller\Api\CategoryController::updateAction" type="service" id="service_locator.ultdm6o"/>
+        <argument key="AppBundle\Controller\Api\MediaController::uploadAction" type="service" id="service_locator.97l52l9"/>
         <argument key="AppBundle\Controller\Api\ShowController::createAction" type="service" id="service_locator.wuys75t"/>
         <argument key="AppBundle\Controller\Api\ShowController::deleteAction" type="service" id="service_locator.hola3os"/>
         <argument key="AppBundle\Controller\Api\ShowController::listAction" type="service" id="service_locator.5ynhqs8"/>
@@ -5095,8 +5231,9 @@
       </argument>
     </service>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
-      <argument type="service" id="service_locator.iv.jde6"/>
+      <argument type="service" id="service_locator.qu94vfe"/>
       <argument type="collection">
+        <argument key="app:create-user">AppBundle\Command\UserCommand</argument>
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
         <argument key="cache:clear">console.command.cache_clear</argument>
@@ -5144,9 +5281,10 @@
         <argument key="server:log">web_server.command.server_log</argument>
       </argument>
     </service>
-    <service id="service_locator.iv.jde6" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.qu94vfe" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="AppBundle\Command\UserCommand" type="service" id="AppBundle\Command\UserCommand"/>
         <argument key="console.command.about" type="service" id="console.command.about"/>
         <argument key="console.command.assets_install" type="service" id="console.command.assets_install"/>
         <argument key="console.command.cache_clear" type="service" id="console.command.cache_clear"/>
@@ -5200,10 +5338,11 @@
         <argument key="inline" type="service" id="fragment.renderer.inline"/>
       </argument>
     </service>
-    <service id="service_locator.atydu1c" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.otsnvhz" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="AppBundle\Type\CategoryType" type="service" id="AppBundle\Type\CategoryType"/>
+        <argument key="AppBundle\Type\MediaType" type="service" id="AppBundle\Type\MediaType"/>
         <argument key="AppBundle\Type\ShowType" type="service" id="AppBundle\Type\ShowType"/>
         <argument key="AppBundle\Type\UserType" type="service" id="AppBundle\Type\UserType"/>
         <argument key="Symfony\Bridge\Doctrine\Form\Type\EntityType" type="service" id="form.type.entity"/>
@@ -5463,9 +5602,10 @@
         <argument key="jms_serializer.stopwatch_subscriber" type="service" id="jms_serializer.stopwatch_subscriber"/>
       </argument>
     </service>
-    <service id="service_locator.lh2nfxp" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id="service_locator.xgmy2f1" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
+        <argument key="AppBundle\Serializer\Handler\ShowHandler" type="service" id="AppBundle\Serializer\Handler\ShowHandler"/>
         <argument key="jms_serializer.array_collection_handler" type="service" id="jms_serializer.array_collection_handler"/>
         <argument key="jms_serializer.constraint_violation_handler" type="service" id="jms_serializer.constraint_violation_handler"/>
         <argument key="jms_serializer.datetime_handler" type="service" id="jms_serializer.datetime_handler"/>
@@ -5539,6 +5679,7 @@
     <service id="Symfony\Component\Security\Http\Firewall" alias="debug.security.firewall" public="false"/>
     <service id="Symfony\Component\Security\Guard\GuardAuthenticatorHandler" alias="security.authentication.guard_handler" public="false"/>
     <service id="security.firewall" alias="debug.security.firewall"/>
+    <service id="security.user_checker.api_doc" alias="security.user_checker" public="false"/>
     <service id="security.user_checker.api" alias="security.user_checker" public="false"/>
     <service id="security.user_checker.login" alias="security.user_checker" public="false"/>
     <service id="security.user_checker.secured_area" alias="security.user_checker" public="false"/>

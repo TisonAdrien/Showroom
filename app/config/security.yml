@@ -25,9 +25,17 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api-doc:
+            pattern: ^/api/doc$
+            anonymous: ~
+
         api:
             pattern: ^/api
-            anonymous: ~
+            stateless: true
+            provider: database
+            guard:
+                authenticators:
+                    - AppBundle\Security\Authentication\ApiUserPasswordAuthenticator
 
         login:
             pattern: ^/login/$

@@ -1,0 +1,148 @@
+PHPUnit 5.7.27 by Sebastian Bergmann and contributors.
+
+Testing Project Test Suite
+.                                                                  1 / 1 (100%)<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Showroom</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="/css/blog-home.css" rel="stylesheet">
+    <script
+        src="http://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+    
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">        Show - by Dreamteam  - Current env = test    </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                                    <li class="nav-item ">
+                        <a class="nav-link" href="/add">Create show</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/category/add">Create category</a>
+                    </li>
+                                            <li class="nav-item ">
+                            <a class="nav-link" href="/user/create">Create user</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/user/list">User list</a>
+                        </li>
+                                        <li class="nav-item ">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                            </ul>
+        </div>
+    </div>
+</nav>
+<div class="alert alert-success" role="alert">
+            You successfully added a new Category
+    </div>
+
+<!-- Page Content -->
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8">
+            <h1 class="my-4">
+                    List of shows
+            </h1>
+            
+    <!-- Blog Post -->
+
+                                                                    <div class="card mb-4">
+            <img class="card-img-top" src="/upload/1521468278_Comedy.png" alt="Card image cap">
+            <div class="card-body">
+                <h2 class="card-title">Uganda knuckles</h2>
+                <p class="card-text">De queen No De Wae !</p>
+            </div>
+            <div class="card-footer text-muted">
+                Posted on 01/01/2008 by De commanda
+                                                            <form action="/delete" method="POST">
+                            <input type="hidden" name="show_id" value="10">
+                            <input type="hidden" name="_csrf_token" value="CmtDgvPb6xfZ_B8kYhL11rtRDzCY_X6_qGeHkGIhrpw">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger" type="submit" style="float:right;cursor:pointer;">Delete</button>
+                        </form>
+                        <a href="/update/10" class="btn btn-primary" style="float:right;margin-right:10px;">Update</a>
+                                                </div>
+        </div>
+            </div>
+        <!-- Sidebar Widgets Column -->
+        <div class="col-md-4">
+            <!-- Search Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                    <form action="/search" method="post">
+                        <div class="input-group">
+                            <input type="text" name="search" required class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                                <input type="submit" class="btn btn-secondary" value="Go!">
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Categories Widget -->
+<div class="card my-4">
+    <h5 class="card-header">Categories (9)</h5>
+    <div class="card-body">
+        <div class="row">
+                                                <div class="col-lg-6"><ul class="list-unstyled mb-0">
+                                <li><a href="#">1523973159</a></li>
+                                                            <li><a href="#">1523973177</a></li>
+                                                            <li><a href="#">1523973439</a></li>
+                                                            <li><a href="#">1523973493</a></li>
+                                                            <li><a href="#">Action</a></li>
+                                    </ul></div>
+                                                                <div class="col-lg-6"><ul class="list-unstyled mb-0">
+                                <li><a href="#">Comedy</a></li>
+                                                            <li><a href="#">S-F</a></li>
+                                                            <li><a href="#">Test</a></li>
+                                                            <li><a href="#">Test_20180417015111</a></li>
+                                                        </div>
+                    </div>
+    </div>
+</div>
+        </div>
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container -->
+<!-- Footer -->
+<footer class="py-5 bg-dark">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Tison Adrien 2018</p>
+    </div>
+    <!-- /.container -->
+</footer>
+<!-- Bootstrap core JavaScript -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+Time: 1.4 seconds, Memory: 28.00MB
+
+[30;42mOK (1 test, 1 assertion)[0m
